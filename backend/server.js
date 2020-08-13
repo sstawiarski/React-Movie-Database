@@ -172,3 +172,39 @@ app.post("/featuredMovie", (req, res, err) => {
     }
 
 })
+
+app.post("/postings", async (req, res, err) => {
+    try {
+        const latest = connection.collection('postings').find({}, { sort: { $natural: -1 } });
+        let latestId = null;
+        let post = null;
+        if (await latest.hasNext()) {
+            post = await latest.next();
+            latestId = post._id;
+        }
+
+        let newPost = new Posting.Posting(
+            {
+                content: req.body.content,
+                date: Date.now(),
+                previous: latestId,
+                before: null
+            }
+        );
+        
+        const newestId = newPost._id;
+
+        await newPost.save();
+
+        if (post !== null) {
+            await connection.collection('postings').updateOne({ "_id": latestId }, { $set: { before: newestId } });
+        }
+
+        res.status(200).send({message: "Successfully added new movie", success: true});
+    }
+    catch {
+        console.log(err);
+        res.status(401).send({message: "Cannot add new movie", success: false});
+    }
+
+})
