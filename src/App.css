@@ -2,6 +2,11 @@ body {
   background: darkgray;
 }
 
+.container {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
 #navbar {
   margin-top: 10px;
 }
@@ -72,5 +77,14 @@ body {
 }
 
 .btn-info {
+  margin-top: 10px;
+}
+
+.btn-outline-secondary {
+  float: right;
+}
+
+.btn-outline-danger {
+  float: right;
   margin-top: 10px;
 }
