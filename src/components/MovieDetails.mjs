@@ -2,7 +2,8 @@ import React from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
-import Table from 'react-bootstrap/Table'
+import Table from 'react-bootstrap/Table';
+import Button from 'react-bootstrap/Button';
 
 
 class MovieDetails extends React.Component {
@@ -18,9 +19,11 @@ class MovieDetails extends React.Component {
             director: null,
             genre: null,
             actors: null,
+            imdb: null,
             isMounted: false
         }
 
+        this.handleClick = this.handleClick.bind(this);
     }
 
     componentDidMount() {
@@ -38,7 +41,8 @@ class MovieDetails extends React.Component {
                         genre: json.Genre,
                         actors: json.Actors.split(", "),
                         isFound: true,
-                        searchTerm: ""
+                        searchTerm: "",
+                        imdb: json.imdbID
                     });
                 }
             })
@@ -49,12 +53,46 @@ class MovieDetails extends React.Component {
         this.setState({ isMounted: false });
     }
 
+    handleClick(event) {
+        event.preventDefault();
+        if (!this.state.title) {
+            return;
+        }
+
+        try {
+            let newMovie = {
+                imdb: this.state.imdb,
+                title: this.state.title,
+                year: this.state.year,
+                plot: this.state.plot
+            };
+            fetch("http://localhost:4000/movielist", {
+                method: "POST",
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newMovie)
+            }).then(res => res.json())
+                .then((json) => {
+                    if (json.success) {
+                        alert(this.state.title + " added to the local database.");
+                    } else {
+                        alert("Could not create new post");
+                    }
+                })
+
+        } catch {
+            alert("Error adding to database");
+        }
+    }
+
     render() {
         if (this.state.isFound) {
             return (
                 <div id="movie-details">
                     <Row>
-                        <Col>
+                        <Col xs={16} md={8}>
                             <Card bg="light">
                                 <Card.Header>Movie Details</Card.Header>
                                 <Card.Body>
@@ -83,7 +121,7 @@ class MovieDetails extends React.Component {
                             </Card>
                         </Col>
 
-                        <Col xs={4}>
+                        <Col xs={16} md={4}>
                             <Card bg="light">
                                 <Card.Header>Quick Info</Card.Header>
                                 <Card.Body>
@@ -92,6 +130,12 @@ class MovieDetails extends React.Component {
                                     <p><b>Directed by: </b> {this.state.director}</p>
                                     <p><b>Description: </b> {this.state.plot}</p>
                                     <p><b>Genre: </b> {this.state.genre}</p>
+                                    <br />
+                                    <br />
+                                    <div id="quick-info-btn-holder">
+                                        <Button variant="primary" id="quick-info-btn" onClick={this.handleClick}>Add movie to local database</Button>
+                                    </div>
+
                                 </Card.Body>
                             </Card>
                         </Col>
