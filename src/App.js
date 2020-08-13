@@ -1,26 +1,39 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Navigation } from './components/Navigation';
+import Container from 'react-bootstrap/Container'
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import Home from './components/Home';
+import Movies from './components/Movies';
+import MovieSearch from './components/MovieSearch';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      searchTerm: ""
+    }
+  }
+
+  render() {
+    return (
+      <BrowserRouter>
+        <div className="App">
+          <Container>
+            <Navigation bg="light" handleSearch={(term)=> this.setState({searchTerm: term})} />
+            <Switch>
+              <Route path="/home" component={Home} />
+              <Route path="/movies" component={Movies} />
+              <Route path="/details/:title" component={MovieSearch}/>
+            </Switch>
+            {/*this.state.searchTerm && <MovieSearch input={this.state.searchTerm}/>*/}
+          </Container>
+        </div>
+      </BrowserRouter>
+    );
+  }
+
 }
 
 export default App;
