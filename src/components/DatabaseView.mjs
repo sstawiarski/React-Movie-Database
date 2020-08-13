@@ -11,13 +11,14 @@ class DatabaseView extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            movies: []
+            movies: [],
+            searchTerm: encodeURI(this.props.searchTerm)
         }
     }
 
     componentDidMount() {
         try {
-            fetch("http://localhost:4000/movielist")
+            fetch(`http://localhost:4000/movielist/${this.state.searchTerm}`)
             .then(res => res.json())
             .then(json =>{
                 this.setState({movies: json});

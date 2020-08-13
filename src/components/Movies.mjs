@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button'
 import Row from 'react-bootstrap/Row';
@@ -20,6 +21,7 @@ class Movies extends React.Component {
 
     handleChange(text) {
         this.setState({ value: text });
+        ReactDOM.render(<DatabaseView key={Date.now()} searchTerm={this.state.value} />, document.getElementById("table-view"));
     }
 
     render() {
@@ -30,8 +32,8 @@ class Movies extends React.Component {
                     <Searchbar onChange={this.handleChange} />
                 </Card>
                 <br />
-                <Card bg="light">
-                    <DatabaseView />
+                <Card bg="light" id="table-view">
+
                 </Card>
             </div>
         );

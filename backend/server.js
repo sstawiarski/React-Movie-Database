@@ -232,11 +232,11 @@ app.get("/movielist/:title", async (req, res) => {
         let response = [];
         const search = connection.collection('allmovies').aggregate([
             {
-                $search: {
-                    "text": {
-                        "query": title,
-                        "path": "title"
-                    }
+                $match: {
+                        title : {
+                            $regex: `${title}`,
+                            $options: "ig"
+                        }
                 }
             },
             {
@@ -252,6 +252,6 @@ app.get("/movielist/:title", async (req, res) => {
         res.status(200).json(response);
     }
     catch {
-        res.status(401).send({message: "Failed to get all movies from database"});
+        res.status(401).send({message: "Failed to search movies from database"});
     }
 });
