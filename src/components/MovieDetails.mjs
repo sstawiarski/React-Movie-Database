@@ -8,10 +8,9 @@ import Table from 'react-bootstrap/Table'
 class MovieDetails extends React.Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
         
         this.state = {
-            searchTerm: null,
+            searchTerm: this.props.input,
             isFound: null,
             title: null,
             year: null,
