@@ -13,16 +13,21 @@ class Home extends React.Component {
             <Container id="main-content">
                 <Row>
                     <Col xs={12} md={8}>
-                        <Body />
+                        <Row>
+                            <Col>
+                                <Body />
+                            </Col>
+                            <Col xs={12}>
+                                <PostCreator />
+                            </Col>
+                        </Row>
+
                     </Col>
 
                     <Col xs={12} md={4}>
                         <Featured key={Date.now()} bg="light" />
                         <FeaturedEditor />
                     </Col>
-                </Row>
-                <Row>
-                    <PostCreator/>
                 </Row>
             </Container>
 
