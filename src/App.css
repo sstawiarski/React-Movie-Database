@@ -15,6 +15,10 @@ body {
   font-weight: bold;
 }
 
+.col-12 {
+  margin-top: 10px;
+}
+
 #featured-movie-poster {
   display: block;
   max-width: 60%;
@@ -27,6 +31,10 @@ body {
   text-align: center;
   font-weight: bold;
   padding-top: 10px;
+}
+
+#featured-movie-edit {
+  margin-top: 10px;
 }
 
 #posts-missing {

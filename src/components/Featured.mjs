@@ -105,7 +105,7 @@ class FeaturedEditor extends React.Component {
 
     render() {
         return (
-            <Card bg={this.props.bg}>
+            <Card bg={this.props.bg} id="featured-movie-edit">
                 <Card.Header>Change Featured Movie</Card.Header>
                 <Card.Body>
                     <Form onSubmit={this.handleSubmit}>
