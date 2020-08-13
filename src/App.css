@@ -68,6 +68,14 @@ body {
   margin-bottom: 50px;
 }
 
+#quick-info-btn-holder {
+  text-align: center;
+}
+
+#quick-info-btn {
+  display: inline;
+}
+
 #main-content {
   margin-top: 20px;
 }
