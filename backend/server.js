@@ -255,3 +255,18 @@ app.get("/movielist/:title", async (req, res) => {
         res.status(401).send({message: "Failed to search movies from database"});
     }
 });
+
+
+app.post("/movielist", (req, res, err) => {
+    let newMovie = req.body;
+    console.log("Added: "+ newMovie);
+    try {
+        connection.collection('allmovies').insertOne(newMovie);
+        res.status(200).send({message: "Successfully added new movie", success: true});
+    }
+    catch {
+        console.log(err);
+        res.status(401).send({message: "Cannot add new movie", success: false});
+    }
+
+})
