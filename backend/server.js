@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const PORT = 4000;
 const Posting = require('./posting.model');
+const FeaturedMovie = require('./featuredMovie.model').FeaturedMovie;
 const mongoose = require('mongoose');
 require('dotenv').config();
 
@@ -84,7 +85,7 @@ app.get("/postings/:id", async (req, res, err) => {
 app.get("/seed", async (req, res, err) => {
 
     try {
-        mongoose.connection.db.dropCollection('foo', function(err, result) {
+        mongoose.connection.db.dropCollection('postings', function (err, result) {
             if (res) {
                 console.log("Dropped DB before seed");
             }
@@ -124,14 +125,50 @@ app.get("/seed", async (req, res, err) => {
         ids.push(post3._id);
         await post3.save();
 
-        for (let i = 0; i < ids.length-1; i++) {
-            await connection.collection('postings').updateOne({"_id" : ids[i]}, {$set: { before: ids[i+1] } });
+        for (let i = 0; i < ids.length - 1; i++) {
+            await connection.collection('postings').updateOne({ "_id": ids[i] }, { $set: { before: ids[i + 1] } });
         }
 
         res.status(200).json({ message: 'Successfully seeded posts' });
 
-    } catch(err) {
+    } catch (err) {
         res.status(401).send('Failed to add new post');
         console.log(err);
     }
 });
+
+app.get("/featuredMovie", async (req, res, err) => {
+    try {
+        let featuredMovie = {};
+        const movie = connection.collection('featuredmovie').find({}, { sort: { $natural: -1 } });
+        if (await movie.hasNext()) {
+            const working = await movie.next();
+            featuredMovie.title = working.title;
+            featuredMovie.imdb = working.imdb;
+            featuredMovie.plot = working.plot;
+            featuredMovie.poster = working.poster;
+            featuredMovie.year = working.year;
+        }
+
+        res.status(200).json(featuredMovie);
+    }
+    catch {
+        res.status(401).json({ message: "Error retreving featured movie" });
+        console.log(err);
+    }
+
+})
+
+app.post("/featuredMovie", (req, res, err) => {
+    let newMovie = req.body;
+    console.log(newMovie);
+    try {
+        connection.collection('featuredmovie').insertOne(newMovie);
+        res.status(200).send({message: "Successfully added new movie", success: true});
+    }
+    catch {
+        console.log(err);
+        res.status(401).send({message: "Cannot add new movie", success: false});
+    }
+
+})
