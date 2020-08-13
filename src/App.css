@@ -1,38 +1,64 @@
-.App {
+body {
+  background: darkgray;
+}
+
+#navbar {
+  margin-top: 10px;
+}
+
+.navbar {
+  border-radius: 10px;
+}
+
+.navbar-brand {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-weight: bold;
+}
+
+#featured-movie-poster {
+  display: block;
+  max-width: 60%;
+  max-height: 20%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#featured-movie-title {
   text-align: center;
+  font-weight: bold;
+  padding-top: 10px;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+#post-date {
+  font-weight: bold;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+#post-navigation {
+  padding-top: 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+#previous-btn {
+  float: left;
+  margin-left: -12px;
 }
 
-.App-link {
-  color: #61dafb;
+#next-btn {
+  float: right;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+#movie-details {
+  margin-top: 20px;
+  margin-bottom: 50px;
+}
+
+#main-content {
+  margin-top: 20px;
+}
+
+#details-header {
+  margin-top: 10px;
+}
+
+.btn-info {
+  margin-top: 10px;
 }
