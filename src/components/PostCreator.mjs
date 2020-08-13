@@ -2,16 +2,21 @@ import React from 'react';
 import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form';
+import ReactMarkdown from 'react-markdown';
+import ReactDOM from 'react-dom';
 
 class PostCreator extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: ""
+            value: "",
+            isLive: false
         };
 
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.renderPreview = this.renderPreview.bind(this);
+        this.cancelPreview = this.cancelPreview.bind(this);
     }
 
     handleSubmit(event) {
@@ -45,8 +50,25 @@ class PostCreator extends React.Component {
     }
 
     handleChange(event) {
+        if (this.state.isLive) {
+            this.setState({ value: event.target.value });
+            this.renderPreview(event);
+        } else {
+            event.preventDefault();
+            this.setState({ value: event.target.value });
+        }
+    }
+
+    renderPreview(event) {
         event.preventDefault();
-        this.setState({ value: event.target.value });
+        if (!this.state.isLive) this.setState({ isLive: true });
+        ReactDOM.render(<MarkdownPreview source={this.state.value} onClick={this.cancelPreview} />, document.getElementById("preview-container"));
+    }
+
+    cancelPreview(event) {
+        event.preventDefault();
+        ReactDOM.render(null, document.getElementById("preview-container"));
+        this.setState({ isLive: false });
     }
 
     render() {
@@ -56,13 +78,34 @@ class PostCreator extends React.Component {
                 <Card.Body>
                     <Form onSubmit={this.handleSubmit}>
                         <Form.Group controlId="newPostBody">
-                            <Form.Control as="textarea" onChange={this.handleChange} value={this.state.value} placeholder="Type a post here..." />
+                            <Form.Control as="textarea" rows="5" onChange={this.handleChange} value={this.state.value} placeholder="Type a post here..." />
                         </Form.Group>
                         <Button variant="primary" type="submit">Submit</Button>
+                        <Button variant="outline-secondary" onClick={this.renderPreview}>Preview Markdown</Button>
                     </Form>
-                    {<div id="texting"></div>}
+                    {<div id="preview-container"></div>}
                 </Card.Body>
             </Card>
+        );
+    }
+}
+
+class MarkdownPreview extends React.Component {
+    render() {
+        return (
+            <div id="markdown-preview">
+                <Button variant="outline-danger" className="ml-auto" onClick={this.props.onClick}>Cancel Preview</Button>
+                <br />
+                <br />
+                <br />
+                <br />
+                <Card bg="light">
+                    <Card.Body>
+                        <ReactMarkdown source={this.props.source} />
+                    </Card.Body>
+                </Card>
+
+            </div>
         );
     }
 }
