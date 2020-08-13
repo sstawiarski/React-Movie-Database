@@ -16,7 +16,9 @@ class PostCreator extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        let newPost = this.state.value;
+        let newPost = {
+            content: this.state.value,
+        };
         try {
             fetch("http://localhost:4000/postings", {
                 method: "POST",
@@ -35,7 +37,7 @@ class PostCreator extends React.Component {
                 })
         }
         catch {
-            console.log("Error adding movie as new featured movie");
+            console.log("Error adding new post");
         }
 
 
