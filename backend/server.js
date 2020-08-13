@@ -161,7 +161,7 @@ app.get("/featuredMovie", async (req, res, err) => {
 
 app.post("/featuredMovie", (req, res, err) => {
     let newMovie = req.body;
-    console.log(newMovie);
+    console.log("Added: "+ newMovie);
     try {
         connection.collection('featuredmovie').insertOne(newMovie);
         res.status(200).send({message: "Successfully added new movie", success: true});
@@ -207,4 +207,51 @@ app.post("/postings", async (req, res, err) => {
         res.status(401).send({message: "Cannot add new movie", success: false});
     }
 
-})
+});
+
+app.get("/movielist", async (req, res) => {
+    try {
+        let response = [];
+        const allmovies = connection.collection('allmovies').find().sort({title: 1});
+
+        while (await allmovies.hasNext()) {
+            const curMovie = await allmovies.next();
+            response.push(curMovie);
+        }
+
+        res.status(200).json(response);
+    }
+    catch {
+        res.status(401).send({message: "Failed to get all movies from database"});
+    }
+});
+
+app.get("/movielist/:title", async (req, res) => {
+    let title = decodeURI(req.params.title);
+    try {
+        let response = [];
+        const search = connection.collection('allmovies').aggregate([
+            {
+                $search: {
+                    "text": {
+                        "query": title,
+                        "path": "title"
+                    }
+                }
+            },
+            {
+                $limit: 5
+            }
+        ]);
+
+        while (await search.hasNext()) {
+            const curMovie = await search.next();
+            response.push(curMovie);
+        }
+
+        res.status(200).json(response);
+    }
+    catch {
+        res.status(401).send({message: "Failed to get all movies from database"});
+    }
+});

@@ -17,11 +17,10 @@ class DatabaseView extends React.Component {
 
     componentDidMount() {
         try {
-
-            fetch("http://localhost:4000/featuredMovie")
+            fetch("http://localhost:4000/movielist")
             .then(res => res.json())
             .then(json =>{
-                this.setState({movies: this.state.movies.concat(json)});
+                this.setState({movies: json});
             });
 
         }
