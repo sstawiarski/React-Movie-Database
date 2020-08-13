@@ -8,9 +8,9 @@ import Table from 'react-bootstrap/Table'
 class MovieDetails extends React.Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
-            searchTerm: this.props.input,
+            searchTerm: this.props.location.state.input,
             isFound: null,
             title: null,
             year: null,
@@ -18,32 +18,39 @@ class MovieDetails extends React.Component {
             plot: null,
             director: null,
             genre: null,
-            actors: null
+            actors: null,
+            isMounted: false
         }
-    
+
     }
 
     componentDidMount() {
-
+        this.setState({isMounted: true});
         fetch(`http://www.omdbapi.com/?apikey=cc276c76&t=${this.state.searchTerm}`)
-        .then(res => res.json())
-        .then(json => {
-            this.setState({
-                title: json.Title,
-                year: json.Year,
-                plot: json.Plot,
-                poster: json.Poster,
-                director: json.Director,
-                genre: json.Genre,
-                actors: json.Actors.split(", "),
-                isFound: true
-            });
-        })
-        .catch(err => console.log(err));
+            .then(res => res.json())
+            .then(json => {
+                if (this.state.isMounted) {
+                    this.setState({
+                        title: json.Title,
+                        year: json.Year,
+                        plot: json.Plot,
+                        poster: json.Poster,
+                        director: json.Director,
+                        genre: json.Genre,
+                        actors: json.Actors.split(", "),
+                        isFound: true,
+                        searchTerm: ""
+                    });
+                }
+            })
+            .catch(err => console.log(err));
+    }
+
+    componentWillUnmount() {
+        this.setState({isMounted: false});
     }
 
     render() {
-
         if (!this.state.isFound) {
             return (
                 <div>
