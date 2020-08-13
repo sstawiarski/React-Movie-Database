@@ -8,9 +8,8 @@ import Table from 'react-bootstrap/Table'
 class MovieDetails extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
-            searchTerm: this.props.location.state.input,
+            searchTerm: decodeURI(this.props.match.params.title),
             isFound: null,
             title: null,
             year: null,
@@ -25,7 +24,7 @@ class MovieDetails extends React.Component {
     }
 
     componentDidMount() {
-        this.setState({isMounted: true});
+        this.setState({ isMounted: true });
         fetch(`http://www.omdbapi.com/?apikey=cc276c76&t=${this.state.searchTerm}`)
             .then(res => res.json())
             .then(json => {
@@ -47,23 +46,11 @@ class MovieDetails extends React.Component {
     }
 
     componentWillUnmount() {
-        this.setState({isMounted: false});
+        this.setState({ isMounted: false });
     }
 
     render() {
-        if (!this.state.isFound) {
-            return (
-                <div>
-                    <Card bg="light" style={{ marginTop: "20px" }}>
-                        <Card.Header>Movie not found</Card.Header>
-                        <Card.Body>
-                            <h3 style={{ textAlign: "center" }}>Please try again.</h3>
-                        </Card.Body>
-                    </Card>
-                </div>
-            );
-        }
-        else {
+        if (this.state.isFound) {
             return (
                 <div id="movie-details">
                     <Row>
@@ -112,6 +99,20 @@ class MovieDetails extends React.Component {
                 </div>
             );
         }
+        else {
+            return (
+                <div>
+                    <Card bg="light" style={{ marginTop: "20px" }}>
+                        <Card.Header>Movie not found</Card.Header>
+                        <Card.Body>
+                            <h3 style={{ textAlign: "center" }}>Please try again.</h3>
+                        </Card.Body>
+                    </Card>
+                </div>
+            );
+        }
+
+
 
     }
 }

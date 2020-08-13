@@ -29,12 +29,12 @@ class App extends React.Component {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/movies" component={Movies} />
-            <Route path="/details" render={(props) => <MovieDetails key={Date.now()} {...props} />} />
+            <Route path="/details/:title" render={(props) => <MovieDetails key={Date.now()} {...props} />} />
           </Switch>
         </Container>
         {this.state.searchTerm && this.state.isSearching && <Redirect to={{
             pathname: `/details/${encodeURI(this.state.searchTerm)}`,
-            state: { input: this.state.searchTerm }
+            state: { title: encodeURI(this.state.searchTerm)}
           }} />}
       </div>
     );
