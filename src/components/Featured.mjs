@@ -9,21 +9,22 @@ class Featured extends React.Component {
         this.state = {
             src: null,
             title: null,
-            description: null,
-            imdb: null
+            desc: null,
+            imdb: null,
+            year: null
         }
     }
 
     componentDidMount() {
-        fetch(`http://www.omdbapi.com/?apikey=cc276c76&i=${this.props.featured}`)
+        fetch(`http://localhost:4000/featuredMovie`)
             .then(res => res.json())
             .then(json => {
                 this.setState({
-                    title: json.Title,
-                    year: json.Year,
-                    desc: json.Plot,
-                    src: json.Poster,
-                    imdb: `https://www.imdb.com/title/${this.props.featured}/`
+                    title: json.title,
+                    year: json.year,
+                    desc: json.plot,
+                    src: json.poster,
+                    imdb: `https://www.imdb.com/title/${json.imdb}/`,
                 });
             })
             .catch(err => console.log(err));
@@ -38,7 +39,7 @@ class Featured extends React.Component {
                         <Card.Img id="featured-movie-poster" src={this.state.src} />
                         <p id="featured-movie-title">{this.state.title} ({this.state.year})</p>
                         <p id="featured-movie-description">{this.state.desc}</p>
-                        <Button variant="info" href={this.state.imdb}>View on IMDb</Button>
+                        <Button variant="info" href={this.state.imdb} target="_blank">View on IMDb</Button>
                     </Card.Body>
                 </Card>
             </div>
@@ -59,7 +60,41 @@ class FeaturedEditor extends React.Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.props.onSubmit(this.state.value);
+        let newMovie;
+        fetch(`http://omdbapi.com/?apikey=cc276c76&i=${this.state.value}`)
+            .then(res => res.json())
+            .then(json => {
+                newMovie = {
+                    title: json.Title,
+                    year: json.Year,
+                    imdb: json.imdbID,
+                    plot: json.Plot,
+                    poster: json.Poster
+                };
+
+                try {
+                    fetch("http://localhost:4000/featuredMovie", {
+                        method: "POST",
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(newMovie)
+                    }).then(res => res.json())
+                        .then((json) => {
+                            if (json.success) {
+                                alert("Featured movie updated");
+                                document.location.reload();
+                            } else {
+                                alert("Could not update featured movie");
+                            }
+                        })
+                }
+                catch {
+                    console.log("Error adding movie as new featured movie");
+                }
+            })
+            .catch(err => alert("Could not fetch new movie."));
         this.setState({ value: "" });
     }
 
