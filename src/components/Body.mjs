@@ -94,14 +94,17 @@ class Body extends React.Component {
             <Card>
                 <Card.Header>News and Updates</Card.Header>
                 <Card.Body>
-                    <p id="post-date">{this.state.postDate}</p>
+                    {this.state.postDate ?
+                    <div>
+                        <p id="post-date">{this.state.postDate}</p>
 
-                    <p id="post-content">{this.state.postMessage}</p>
+                        <p id="post-content">{this.state.postMessage}</p>
 
-                    <div id="post-navigation">
-                        {this.state.isNextPost && <Button variant="link" id="previous-btn" onClick={this.handleClick}>Previous Post</Button>}
-                        {this.state.isPostBefore && <Button variant="link" id="next-btn" onClick={this.handleClick}>Next Post</Button>}
-                    </div>
+                        <div id="post-navigation">
+                            {this.state.isNextPost && <Button variant="link" id="previous-btn" onClick={this.handleClick}>Previous Post</Button>}
+                            {this.state.isPostBefore && <Button variant="link" id="next-btn" onClick={this.handleClick}>Next Post</Button>}
+                        </div></div> : <p id="posts-missing">Posts not found</p>}
+
 
                 </Card.Body>
             </Card>
