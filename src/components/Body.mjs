@@ -99,7 +99,7 @@ class Body extends React.Component {
                         <div>
                             <p id="post-date">{this.state.postDate}</p>
 
-                            <p id="post-content">{this.state.postMessage && <ReactMarkdown source={this.state.postMessage.replace(/\n/gi, '\n &nbsp;')} />}</p>
+                            <div id="post-content">{this.state.postMessage && <ReactMarkdown source={this.state.postMessage.replace(/\n/gi, '\n &nbsp;')} />}</div>
 
                             <div id="post-navigation">
                                 {this.state.isNextPost && <Button variant="link" id="previous-btn" onClick={this.handleClick}>Previous Post</Button>}
