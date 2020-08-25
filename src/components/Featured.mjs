@@ -36,7 +36,7 @@ class Featured extends React.Component {
                 <Card bg={this.props.bg}>
                     <Card.Header>Featured Movie</Card.Header>
                     <Card.Body>
-                        <Card.Img id="featured-movie-poster" src={this.state.src} />
+                        <Card.Img className="featured-movie-poster" src={this.state.src} />
                         <p id="featured-movie-title">{this.state.title} ({this.state.year})</p>
                         <p id="featured-movie-description">{this.state.desc}</p>
                         <Button variant="info" href={this.state.imdb} target="_blank">View on IMDb</Button>
@@ -99,7 +99,6 @@ class FeaturedEditor extends React.Component {
     }
 
     handleChange(event) {
-        event.preventDefault();
         this.setState({ value: event.target.value });
     }
 
