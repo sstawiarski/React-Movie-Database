@@ -20,7 +20,6 @@ class Navigation extends React.Component {
     }
 
     handleInput(event) {
-        event.preventDefault();
         this.setState({search: event.target.value});
     }
 
