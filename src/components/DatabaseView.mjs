@@ -7,26 +7,24 @@ class DatabaseView extends React.Component {
         super(props);
         this.state = {
             movies: [],
-            searchTerm: encodeURI(this.props.searchTerm)
         }
     }
 
-    componentDidMount() {
+    render() {
+        const searchTerm = encodeURI(this.props.searchTerm);
+
         try {
-            fetch(`http://localhost:4000/movielist/${this.state.searchTerm}`)
-            .then(res => res.json())
-            .then(json =>{
-                this.setState({movies: json});
-            });
+            fetch(`http://localhost:4000/movielist/${searchTerm}`)
+                .then(res => res.json())
+                .then(json => {
+                    this.setState({ movies: json });
+                });
 
         }
         catch {
             console.log("error searching movie database");
         }
 
-    }
-
-    render() {
         return (
             <Container id="database-view">
                 <Table striped bordered hover>

@@ -14,8 +14,9 @@ class Searchbar extends React.Component {
 
     handleChange(event) {
         event.preventDefault();
-        this.setState({value: event.target.value})
-        this.props.onChange(this.state.value);
+        this.setState({value: event.target.value}, () => {
+            this.props.onChange(this.state.value)
+        });
     }
 
     render() {

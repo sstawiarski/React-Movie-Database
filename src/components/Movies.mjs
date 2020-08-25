@@ -15,8 +15,9 @@ class Movies extends React.Component {
     }
 
     handleChange(text) {
-        this.setState({ value: text });
-        ReactDOM.render(<DatabaseView key={Date.now()} searchTerm={this.state.value} />, document.getElementById("table-view"));
+        this.setState({ value: text }, () => {
+            ReactDOM.render(<DatabaseView searchTerm={this.state.value} />, document.getElementById("table-view"))
+        });
     }
 
     render() {
