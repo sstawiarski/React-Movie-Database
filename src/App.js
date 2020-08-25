@@ -4,9 +4,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navigation } from './components/Navigation';
 import Container from 'react-bootstrap/Container'
 import { Route, Switch, Redirect } from 'react-router-dom';
-import Home from './components/Home';
-import Movies from './components/Movies';
-import MovieDetails from './components/MovieDetails'
+import Home from './pages/Home';
+import Movies from './pages/Movies';
+import MovieDetails from './pages/MovieDetails'
 
 class App extends React.Component {
   constructor(props) {

@@ -1,7 +1,7 @@
 import React from 'react';
-import { Body } from "./Body";
-import { Featured, FeaturedEditor } from './Featured';
-import { PostCreator } from './PostCreator'
+import { Body } from "../components/Body";
+import { Featured, FeaturedEditor } from '../components/Featured';
+import { PostCreator } from '../components/PostCreator'
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';

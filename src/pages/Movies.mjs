@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Card from 'react-bootstrap/Card';
-import { Searchbar } from './Searchbar.mjs';
-import DatabaseView from './DatabaseView.mjs';
+import { Searchbar } from '../components/Searchbar'
+import DatabaseView from '../components/DatabaseView';
 
 class Movies extends React.Component {
     constructor(props) {
