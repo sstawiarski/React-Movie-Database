@@ -25,7 +25,7 @@ class Home extends React.Component {
                     </Col>
 
                     <Col xs={12} md={4}>
-                        <Featured key={Date.now()} bg="light" />
+                        <Featured bg="light" />
                         <FeaturedEditor />
                     </Col>
                 </Row>
