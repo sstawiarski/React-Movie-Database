@@ -6,7 +6,7 @@ import Container from 'react-bootstrap/Container'
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Home from './components/Home';
 import Movies from './components/Movies';
-import MovieDetails from './components/MovieDetails';
+import MovieDetails from './components/MovieDetails'
 
 class App extends React.Component {
   constructor(props) {
@@ -22,20 +22,22 @@ class App extends React.Component {
       <div className="App">
         <Container>
           <Navigation bg="light" handleSearch={(term) => {
-            this.setState({ 
+            this.setState({
               searchTerm: term,
-              isSearching: true })
-            }} />
+              isSearching: true
+            })
+          }} />
           <Switch>
             <Route exact path="/" component={Home} />
             <Route path="/movies" component={Movies} />
-            <Route path="/details/:title" render={(props) => <MovieDetails key={Date.now()} {...props} />} />
+            <Route exact path="/details/:id" render={(props) => <MovieDetails isText={false} {...props} />} />
+            <Route exact path="/search/:title" render={(props) => <MovieDetails isText={true} {...props} />} />
           </Switch>
         </Container>
         {this.state.searchTerm && this.state.isSearching && <Redirect to={{
-            pathname: `/details/${encodeURI(this.state.searchTerm)}`,
-            state: { title: encodeURI(this.state.searchTerm)}
-          }} />}
+          pathname: `/search/${encodeURI(this.state.searchTerm)}`,
+          state: { title: encodeURI(this.state.searchTerm) }
+        }} />}
       </div>
     );
   }

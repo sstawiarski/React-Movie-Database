@@ -24,7 +24,7 @@ body {
   margin-top: 10px;
 }
 
-#featured-movie-poster {
+.featured-movie-poster {
   display: block;
   max-width: 60%;
   max-height: 20%;
