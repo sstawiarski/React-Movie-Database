@@ -7,6 +7,32 @@ body {
   margin-bottom: 30px;
 }
 
+.profile {
+    text-align: right;
+    margin-bottom: -10px;
+}
+
+.profile-text {
+  padding-top: 4px;
+}
+
+.profile-image {
+  padding-left: 10px;
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.sign-in {
+  padding-top: 20px;
+  padding-left: 15px;
+}
+
+.label {
+  font-weight: bold;
+  font-size: 20pt;
+}
+
 #navbar {
   margin-top: 10px;
 }
