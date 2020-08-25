@@ -59,6 +59,10 @@ body {
   margin-left: -12px;
 }
 
+.clickable-row {
+  cursor: pointer;
+}
+
 #next-btn {
   float: right;
 }

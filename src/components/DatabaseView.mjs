@@ -41,7 +41,7 @@ class DatabaseView extends React.Component {
                     <tbody>
                         {this.state.movies.map(movie => {
                             return (
-                                <tr key={movie.imdb}>
+                                <tr key={movie.imdb} className="clickable-row" onClick={() => window.location = `details/${movie.imdb}`}>
                                     <td>{movie.imdb}</td>
                                     <td>{movie.title}</td>
                                     <td>{movie.year}</td>
