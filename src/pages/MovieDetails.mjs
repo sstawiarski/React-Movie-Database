@@ -17,6 +17,15 @@ class MovieDetails extends React.Component {
             poster: null,
             plot: null,
             imdb: null,
+            director: null,
+            runtime: null,
+            rating: null,
+            actors: null,
+            writer: null,
+            boxOffice: null,
+            production: null,
+            released: null,
+            rated: null
         }
 
     }
@@ -26,42 +35,60 @@ class MovieDetails extends React.Component {
 
         if (!this.props.isText) {
             fetch(`http://localhost:4000/moviedetails/${this.state.searchTerm}`)
-            .then(res => res.json())
-            .then(json => {
-                if (this.state.isMounted) {
-                    this.setState({
-                        title: json.title,
-                        year: json.year,
-                        plot: json.plot,
-                        poster: json.poster,
-                        isFound: true,
-                        searchTerm: "",
-                        imdb: json.imdb
-                    });
-                }
-            })
-            .catch(err => console.log(err));
-            
+                .then(res => res.json())
+                .then(json => {
+                    if (this.state.isMounted) {
+                        this.setState({
+                            title: json.title,
+                            year: json.year,
+                            plot: json.plot,
+                            poster: json.poster,
+                            isFound: true,
+                            searchTerm: "",
+                            imdb: json.imdb,
+                            director: json.director,
+                            runtime: json.runtime,
+                            rating: json.rating,
+                            actors: json.actors,
+                            writer: json.writer,
+                            boxOffice: json.boxOffice,
+                            production: json.production,
+                            released: json.released,
+                            rated: json.rated
+                        });
+                    }
+                })
+                .catch(err => console.log(err));
+
         } else {
             fetch(`http://localhost:4000/movielist/${this.props.location.state.title}`)
-            .then(res => res.json())
-            .then(json => {
-                json = json[0];
-                if (this.state.isMounted) {
-                    this.setState({
-                        title: json.title,
-                        year: json.year,
-                        plot: json.plot,
-                        poster: json.poster,
-                        isFound: true,
-                        searchTerm: "",
-                        imdb: json.imdb
-                    });
-                }
-            })
-            .catch(err => console.log(err));
+                .then(res => res.json())
+                .then(json => {
+                    json = json[0];
+                    if (this.state.isMounted) {
+                        this.setState({
+                            title: json.title,
+                            year: json.year,
+                            plot: json.plot,
+                            poster: json.poster,
+                            isFound: true,
+                            searchTerm: "",
+                            imdb: json.imdb,
+                            director: json.director,
+                            runtime: json.runtime,
+                            rating: json.rating,
+                            actors: json.actors,
+                            writer: json.writer,
+                            boxOffice: json.boxOffice,
+                            production: json.production,
+                            released: json.released,
+                            rated: json.rated
+                        });
+                    }
+                })
+                .catch(err => console.log(err));
         }
-        
+
     }
 
     componentWillUnmount() {
@@ -78,10 +105,51 @@ class MovieDetails extends React.Component {
                                 <Card.Header>Movie Details</Card.Header>
                                 <Card.Body>
                                     <h2 style={{ textAlign: "center" }}>{this.state.title} ({this.state.year})</h2>
-                                    <h4 id="details-heading"><b>Plot Summary</b></h4>
+                                    <h4 class="subsection"><b>Plot Summary</b></h4>
                                     <p>{this.state.plot}</p>
-                                    <br />
+                                    <h4 class="subsection"><b>Director</b></h4>
+                                    <p>{this.state.director}</p>
+                                    <h4 class="subsection"><b>Castlist</b></h4>
+                                    <Table striped bordered>
+                                        <tbody>
+                                            {this.state.actors.split(',').map(actor => {
+                                                return (<tr key={actor}><td>{actor}</td></tr>)
+                                            })}
+                                        </tbody>
+                                    </Table>
+                                    <div class="additional-info" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-evenly"}}>
+                                        <h4 class="subsection" style={{ flex: "100%" }}>Additional Information</h4>
+                                        
+                                        <div className="additional-info-item">
+                                            <h5 class="subsection"><b>Writer</b></h5>
+                                            <p>{this.state.writer}</p>
+                                        </div>
 
+                                        <div className="additional-info-item">
+                                            <h5 class="subsection"><b>Runtime</b></h5>
+                                            <p>{this.state.runtime}</p>
+                                        </div>
+
+                                        <div className="additional-info-item">
+                                            <h5 class="subsection"><b>Box Office</b></h5>
+                                            <p>{this.state.boxOffice}</p>
+                                        </div>
+
+                                        <div className="additional-info-item">
+                                            <h5 class="subsection"><b>Production</b></h5>
+                                            <p>{this.state.production}</p>
+                                        </div>
+
+                                        <div className="additional-info-item">
+                                            <h5 class="subsection"><b>Release Date</b></h5>
+                                            <p>{this.state.released}</p>
+                                        </div>
+
+                                        <div className="additional-info-item">
+                                            <h5 class="subsection"><b>Rated</b></h5>
+                                            <p>{this.state.rated}</p>
+                                        </div>
+                                    </div>
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -92,10 +160,11 @@ class MovieDetails extends React.Component {
                                 <Card.Body>
                                     <Card.Img src={this.state.poster} className="featured-movie-poster" />
                                     <br />
-                                    <p><b>Description: </b> {this.state.plot}</p>
-                                    <br />
-                                    <br />
-
+                                    <p><b>Director: </b> {this.state.director}</p>
+                                    <p><b>Summary: </b> {this.state.plot}</p>
+                                    <p><b>Rated: </b> {this.state.rated}</p>
+                                    <p><b>Runtime: </b> {this.state.runtime}</p>
+                                    <p><b>IMDb Rating: </b> {this.state.rating}</p>
                                 </Card.Body>
                             </Card>
                         </Col>

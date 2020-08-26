@@ -110,8 +110,12 @@ body {
   margin-top: 20px;
 }
 
-#details-header {
-  margin-top: 10px;
+.subsection {
+  margin-top: 20px;
+}
+
+.additional-info-item {
+  flex-basis: 33%;
 }
 
 .btn-info {
