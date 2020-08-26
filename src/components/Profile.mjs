@@ -1,10 +1,19 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { ReactComponent as UserLogo } from '../assets/user-male-circle.svg'
+import { auth } from '../firebase/firebase.utils'
 
-const Profile = () => (
+const Profile = ({ currentUser }) => (
     <div className="profile">
-        <a href="/signin" className="profile-text">Sign In</a>
-        <UserLogo className="profile-image" onClick={()=> alert("Clicked!")}/>
+        {
+            currentUser ?
+            <div onClick={() => auth.signOut()}>
+                Sign Out
+            </div>
+            :
+            <Link to="/signin" className="profile-text">Sign In</Link>
+        }
+        <UserLogo className="profile-image" />
     </div>
 );
 

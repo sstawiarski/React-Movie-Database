@@ -11,20 +11,35 @@ import SignIn from './pages/SignIn';
 import About from './pages/About';
 import MovieDetails from './pages/MovieDetails'
 
+import { auth } from './firebase/firebase.utils';
+
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       searchTerm: "",
-      isSearching: false
+      isSearching: false,
+      currentUser: null
     }
+  }
+
+  unsubscribeFromAuth = null;
+
+  componentDidMount() {
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(user => {
+      this.setState({currentUser: user})
+    })
+  }
+
+  componentWillUnmount() {
+    this.unsubscribeFromAuth();
   }
 
   render() {
     return (
       <div className="App">
         <Container>
-          <Profile />
+          <Profile currentUser={this.state.currentUser}/>
           <Navigation bg="light" handleSearch={(term) => {
             this.setState({
               searchTerm: term,
