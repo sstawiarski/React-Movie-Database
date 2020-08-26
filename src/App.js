@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navigation } from './components/Navigation';
-import Profile from './components/Profile'
+import Profile from './components/SignInButton'
 import Container from 'react-bootstrap/Container'
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Home from './pages/Home';
