@@ -7,9 +7,7 @@ const Profile = ({ currentUser }) => (
     <div className="profile">
         {
             currentUser ?
-            <div onClick={() => auth.signOut()}>
-                Sign Out
-            </div>
+            <Link className="profile-text" onClick={() => auth.signOut()}>Sign Out</Link>
             :
             <Link to="/signin" className="profile-text">Sign In</Link>
         }
