@@ -3,6 +3,8 @@ import React from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button'
 
+import { withRouter } from 'react-router-dom'
+
 import { auth } from '../firebase/firebase.utils';
 
 class SignIn extends React.Component {
@@ -21,6 +23,7 @@ class SignIn extends React.Component {
         try {
             await auth.signInWithEmailAndPassword(email, password);
             this.setState({ email: '', password: '' });
+            this.props.history.push('/');
         } catch (error) {
             console.error('Could not log in user.')
         }
@@ -70,4 +73,4 @@ class SignIn extends React.Component {
 
 }
 
-export default SignIn;
+export default withRouter(SignIn);
