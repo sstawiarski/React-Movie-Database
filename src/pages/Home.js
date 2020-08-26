@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Body } from "../components/Body";
-import { Featured, FeaturedEditor } from '../components/Featured';
+import Featured from '../components/Featured';
+import FeaturedMovieEditor from '../components/FeaturedMovieEditor'
 import { PostCreator } from '../components/PostCreator'
 
 import Row from 'react-bootstrap/Row';
@@ -37,7 +38,7 @@ const Home = () => {
                     <Featured bg="light" />
                     {
                         loggedInAdmin ?
-                            <FeaturedEditor />
+                            <FeaturedMovieEditor />
                             :
                             null
                     }
