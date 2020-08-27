@@ -1,11 +1,9 @@
 import React from 'react';
 
-import UserContext from '../UserContext';
-
 import ProfileBody from '../components/Profile/Profile-Body';
 import ProfileSidebar from '../components/Profile/Profile-Sidebar';
 
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 
 class UserProfile extends React.Component {
     constructor(props) {

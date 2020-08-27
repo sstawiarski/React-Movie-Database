@@ -1,13 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { Container, Row, Col, Card } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 
 class ProfileSidebar extends React.Component {
-
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const { age, location, email, username } = this.props.userInfo;
         return (
