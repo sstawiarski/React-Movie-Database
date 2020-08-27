@@ -11,11 +11,21 @@ const Profile = () => {
         <div className="profile">
             {
                 currentUser ?
-                    <Link className="profile-text" onClick={() => auth.signOut()}>Sign Out</Link>
+                    <div>
+                        <Link to="/" className="profile-text" onClick={() => auth.signOut()}>Sign Out</Link>
+                        <Link to={`/profile/${currentUser.email}`}>
+                            <UserLogo className="profile-image" />
+                        </Link>
+                    </div>
                     :
-                    <Link to="/signin" className="profile-text">Sign In</Link>
+                    <div>
+                        <Link to="/signin" className="profile-text">Sign In</Link>
+                        <Link to="/signin" className="profile-text">
+                            <UserLogo className="profile-image" />
+                        </Link>
+                    </div>
             }
-            <UserLogo className="profile-image" />
+
         </div>
     )
 };

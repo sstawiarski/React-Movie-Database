@@ -12,6 +12,7 @@ import About from './pages/About';
 import MovieDetails from './pages/MovieDetails'
 
 import UserProvider from './UserProvider';
+import UserProfile from './pages/UserProfile';
 
 class App extends React.Component {
   constructor(props) {
@@ -41,6 +42,7 @@ class App extends React.Component {
               <Route exact path="/details/:id" render={(props) => <MovieDetails isText={false} {...props} />} />
               <Route exact path="/search/:title" render={(props) => <MovieDetails isText={true} {...props} />} />
               <Route exact path="/signin" component={SignIn} />
+              <Route exact path="/profile/:email" component={UserProfile} />
             </Switch>
           </Container>
           {this.state.searchTerm && this.state.isSearching && <Redirect to={{
