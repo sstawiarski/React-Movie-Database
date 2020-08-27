@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-
+const Posting = require('../models/posting.model');
 const connection = mongoose.connection;
 
 router.get('/', async (req, res, err) => {
@@ -59,7 +59,7 @@ router.get('/:id', async (req, res, err) => {
     }
 });
 
-router.post('/postings', async (req, res, err) => {
+router.post('/', async (req, res, err) => {
     try {
         const latest = connection.collection('postings').find({}, { sort: { $natural: -1 } });
         let latestId = null;
