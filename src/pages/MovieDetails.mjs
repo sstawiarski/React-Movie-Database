@@ -105,11 +105,11 @@ class MovieDetails extends React.Component {
                                 <Card.Header>Movie Details</Card.Header>
                                 <Card.Body>
                                     <h2 style={{ textAlign: "center" }}>{this.state.title} ({this.state.year})</h2>
-                                    <h4 class="subsection"><b>Plot Summary</b></h4>
+                                    <h4 className="subsection"><b>Plot Summary</b></h4>
                                     <p>{this.state.plot}</p>
-                                    <h4 class="subsection"><b>Director</b></h4>
+                                    <h4 className="subsection"><b>Director</b></h4>
                                     <p>{this.state.director}</p>
-                                    <h4 class="subsection"><b>Castlist</b></h4>
+                                    <h4 className="subsection"><b>Castlist</b></h4>
                                     <Table striped bordered>
                                         <tbody>
                                             {this.state.actors.split(',').map(actor => {
@@ -117,36 +117,36 @@ class MovieDetails extends React.Component {
                                             })}
                                         </tbody>
                                     </Table>
-                                    <div class="additional-info" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-evenly"}}>
-                                        <h4 class="subsection" style={{ flex: "100%" }}>Additional Information</h4>
+                                    <div className="additional-info" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-evenly"}}>
+                                        <h4 className="subsection" style={{ flex: "100%" }}>Additional Information</h4>
                                         
                                         <div className="additional-info-item">
-                                            <h5 class="subsection"><b>Writer</b></h5>
+                                            <h5 className="subsection"><b>Writer</b></h5>
                                             <p>{this.state.writer}</p>
                                         </div>
 
                                         <div className="additional-info-item">
-                                            <h5 class="subsection"><b>Runtime</b></h5>
+                                            <h5 className="subsection"><b>Runtime</b></h5>
                                             <p>{this.state.runtime}</p>
                                         </div>
 
                                         <div className="additional-info-item">
-                                            <h5 class="subsection"><b>Box Office</b></h5>
+                                            <h5 className="subsection"><b>Box Office</b></h5>
                                             <p>{this.state.boxOffice}</p>
                                         </div>
 
                                         <div className="additional-info-item">
-                                            <h5 class="subsection"><b>Production</b></h5>
+                                            <h5 className="subsection"><b>Production</b></h5>
                                             <p>{this.state.production}</p>
                                         </div>
 
                                         <div className="additional-info-item">
-                                            <h5 class="subsection"><b>Release Date</b></h5>
+                                            <h5 className="subsection"><b>Release Date</b></h5>
                                             <p>{this.state.released}</p>
                                         </div>
 
                                         <div className="additional-info-item">
-                                            <h5 class="subsection"><b>Rated</b></h5>
+                                            <h5 className="subsection"><b>Rated</b></h5>
                                             <p>{this.state.rated}</p>
                                         </div>
                                     </div>
