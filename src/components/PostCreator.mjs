@@ -51,16 +51,13 @@ class PostCreator extends React.Component {
 
     handleChange(event) {
         if (this.state.isLive) {
-            this.setState({ value: event.target.value });
-            this.renderPreview(event);
+            this.setState({ value: event.target.value }, () => this.renderPreview(event));
         } else {
-            event.preventDefault();
             this.setState({ value: event.target.value });
         }
     }
 
     renderPreview(event) {
-        event.preventDefault();
         if (!this.state.isLive) this.setState({ isLive: true });
         ReactDOM.render(<MarkdownPreview source={this.state.value} onClick={this.cancelPreview} />, document.getElementById("preview-container"));
     }
