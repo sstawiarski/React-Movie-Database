@@ -14,7 +14,7 @@ const Home = () => {
     const context = useContext(UserContext);
     const loggedInAdmin = (context.user && context.isAdmin);
     return (
-        <Container id="main-content">
+        <Container className="main-content">
             <Row>
                 <Col xs={12} md={8}>
                     <Row>
