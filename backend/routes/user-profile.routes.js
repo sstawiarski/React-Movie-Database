@@ -48,4 +48,29 @@ router.get('/:id', async (req, res, err) => {
     }
 });
 
+router.post('/favorites/:id', async (req, res, err) => {
+    const id = req.params.id;
+    const email = req.body.email;
+    console.log(email);
+
+    try {
+        let movie = {};
+        const posts = connection.collection('allmovies').find({ "imdb": id });
+        if (await posts.hasNext()) {
+            const working = await posts.next();
+            movie.title = working.title;
+            movie.poster = working.poster;
+            movie.year = working.year;
+            movie.imdb = working.imdb;
+        }
+
+        await connection.collection('profiles').updateOne({"email": email}, {$push: {"favorites": movie} } )
+
+        res.status(200).json({message: "Added movie to favorites"});
+    }
+    catch (err) {
+        res.status(401).json({ message: "Error retreving profile" });
+    }
+})
+
 module.exports = router;
