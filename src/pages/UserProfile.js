@@ -2,6 +2,7 @@ import React from 'react';
 
 import ProfileBody from '../components/Profile/Profile-Body';
 import ProfileSidebar from '../components/Profile/Profile-Sidebar';
+import ProfileFavorites from '../components/Profile/Profile-Favorites';
 
 import { Container, Row, Col } from 'react-bootstrap';
 
@@ -32,9 +33,13 @@ class UserProfile extends React.Component {
                     <Col xs={12} md={8}>
                         <Row>
                             <Col>
-                                {this.state.user ? <ProfileBody profileText={this.state.user.profileText} favorites={this.state.user.favorites} /> : null }
+                                {this.state.user ? <ProfileBody profileText={this.state.user.profileText} /> : null }
                             </Col>
-
+                        </Row>
+                        <Row>
+                            <Col>
+                                {this.state.user ? <ProfileFavorites favorites={this.state.user.favorites} /> : null}
+                            </Col>
                         </Row>
 
                     </Col>
