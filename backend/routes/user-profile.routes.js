@@ -48,9 +48,9 @@ router.get('/:id', async (req, res, err) => {
     }
 });
 
-router.get('/favorites/:id', async (req, res, err) => {
+router.get('/favorites/:email/:id', async (req, res, err) => {
     const id = req.params.id;
-    const email = req.body.email;
+    const email = req.params.email;
 
     try {
         const favorite = connection.collection('profiles').find(
@@ -95,6 +95,21 @@ router.post('/favorites/:id', async (req, res, err) => {
     }
     catch (err) {
         res.status(401).json({ message: "Error retreving favorites" });
+    }
+})
+
+router.delete('/favorites/:id', async (req, res, err) => {
+    const id = req.params.id;
+    const email = req.body.email;
+
+    try {
+
+        await connection.collection('profiles').updateOne({"email": email}, {$pull: {"favorites": { "imdb": id }} } )
+
+        res.status(200).json({message: "Remove movie from favorites"});
+    }
+    catch (err) {
+        res.status(401).json({ message: "Error with favorites" });
     }
 })
 

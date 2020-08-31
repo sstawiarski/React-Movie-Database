@@ -28,7 +28,9 @@ class MovieDetails extends React.Component {
             production: null,
             released: null,
             rated: null, 
-            successAdd: ''
+            successAdd: '',
+            isFavorited: false,
+            successRemove: ''
         }
 
     }
@@ -122,17 +124,65 @@ class MovieDetails extends React.Component {
 
     }
 
+    removeFavorite = async (imdbID, email) => {
+        const body = {
+            email: email
+        }
+
+        try {
+            const response = await fetch(`http://localhost:4000/profile/favorites/${imdbID}`, {
+                method: "DELETE",
+                mode: "cors",
+                cache: "no-cache",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            });
+            this.setState({isFavorited: false, successRemove: true});
+        }
+        catch (error) {
+            console.error(error.message)
+            this.setState({successRemove: false});
+        }
+
+    }
+
+    checkFavorite = (imdbID, email) => {
+        const body = {
+            email: email
+        }
+
+        try {
+            fetch(`http://localhost:4000/profile/favorites/${email}/${imdbID}`)
+            .then(response => response.json())
+            .then(json => {
+                if (json.isInFavorites) {
+                    this.setState({isFavorited: true})
+                }
+            });
+
+        }
+        catch (error) {
+            console.error(error.message)
+        }
+    }
+
     render() {
         if (this.state.isFound) {
             return (
                     <div id="movie-details">
                         {this.state.successAdd ? 
                         <Alert variant="success" onClose={() => this.setState({successAdd: ''})} dismissible>
-                            <p>Movie added to favorites</p>
+                            <p style={{textAlign: "center", marginTop: "5px"}}>Movie added to favorites</p>
                         </Alert> : null}
                         {this.state.successAdd === false ? 
                         <Alert variant="danger" onClose={() => this.setState({successAdd: ''})} dismissible>
-                            <p>Movie could not be added to favorites</p>
+                            <p style={{textAlign: "center", marginTop: "5px"}}>Movie could not be added to favorites</p>
+                        </Alert> : null}
+                        {this.state.successRemove ? 
+                        <Alert variant="success" onClose={() => this.setState({successRemove: ''})} dismissible>
+                            <p style={{textAlign: "center", marginTop: "5px"}}>Movie removed favorites</p>
                         </Alert> : null}
                         <Row>
                             <Col xs={16} md={8}>
@@ -203,7 +253,12 @@ class MovieDetails extends React.Component {
                                         <UserContext.Consumer>
                                             {value => {
                                                 if (value.user) {
-                                                    return (<Button onClick={()=> this.addFavorite(this.state.imdb, value.user.email)}>Add to favorites</Button>)
+                                                    this.checkFavorite(this.state.imdb, value.user.email);
+                                                    if (!this.state.isFavorited) {
+                                                        return (<Button onClick={()=> this.addFavorite(this.state.imdb, value.user.email)}>Add to favorites</Button>)
+                                                    } else {
+                                                        return (<Button variant="outline-danger" onClick={()=> this.removeFavorite(this.state.imdb, value.user.email)}>Remove from favorites</Button>)
+                                                    }
                                                 }
                                                  return (null)}}
                                         </UserContext.Consumer>
