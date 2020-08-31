@@ -48,10 +48,35 @@ router.get('/:id', async (req, res, err) => {
     }
 });
 
+router.get('/favorites/:id', async (req, res, err) => {
+    const id = req.params.id;
+    const email = req.body.email;
+
+    try {
+        const favorite = connection.collection('profiles').find(
+            { 
+                "email": email,
+                "favorites": {
+                    "$elemMatch": {
+                        "imdb": id
+                    }
+                }
+         });
+
+         if (await favorite.hasNext()) {
+            res.status(200).json({message: "Movie is in favorites", isInFavorites: true});
+         } else {
+            res.status(200).json({message: "Movie is NOT in favorites", isInFavorites: false});
+         }
+    }
+    catch (err) {
+        res.status(401).json({ message: "Error with favorites query",});
+    }
+})
+
 router.post('/favorites/:id', async (req, res, err) => {
     const id = req.params.id;
     const email = req.body.email;
-    console.log(email);
 
     try {
         let movie = {};
@@ -69,7 +94,7 @@ router.post('/favorites/:id', async (req, res, err) => {
         res.status(200).json({message: "Added movie to favorites"});
     }
     catch (err) {
-        res.status(401).json({ message: "Error retreving profile" });
+        res.status(401).json({ message: "Error retreving favorites" });
     }
 })
 
