@@ -38,13 +38,33 @@ router.get('/:id', async (req, res, err) => {
             firstPost.age = working.age;
             firstPost.location = working.location;
             firstPost.profileText = working.profileText;
-            firstPost.favorites = working.favorites;
+            firstPost.favorites = working.favorites.slice(0,5);
+            firstPost.favoriteCount = working.favorites.length;
         }
 
         res.status(200).json(JSON.stringify(firstPost));
     }
     catch (err) {
         res.status(401).json({ message: "Error retreving profile" });
+    }
+});
+
+router.get('/:id/all', async (req, res, err) => {
+    const id = req.params.id;
+
+    try {
+        let firstPost = {};
+        const posts = connection.collection('profiles').find({ "email": id });
+        if (await posts.hasNext()) {
+            const working = await posts.next();
+            firstPost.favorites = working.favorites;
+            firstPost.foundFavorites = true;
+        }
+
+        res.status(200).json(JSON.stringify(firstPost));
+    }
+    catch (err) {
+        res.status(401).json({ message: "Error retreving favorites" });
     }
 });
 
