@@ -14,6 +14,7 @@ import MovieDetails from './pages/MovieDetails'
 import UserProvider from './UserProvider';
 import UserProfile from './pages/UserProfile';
 import FavoritesDetail from './pages/FavoritesDetail';
+import EditProfile from './pages/EditProfile';
 
 class App extends React.Component {
   constructor(props) {
@@ -45,6 +46,7 @@ class App extends React.Component {
               <Route exact path="/signin" component={SignIn} />
               <Route exact path="/profile/:email" component={UserProfile} />
               <Route exact path="/profile/:email/favorites" component={FavoritesDetail} />
+              <Route exact path="/profile/:email/edit" component={EditProfile} />
             </Switch>
           </Container>
           {this.state.searchTerm && this.state.isSearching && <Redirect to={{
