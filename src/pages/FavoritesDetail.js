@@ -30,9 +30,8 @@ class FavoritesDetail extends React.Component {
                         <div className="item-grid">
                             {this.state.favorites.map(item => {
                                 return (
-                                    <div className="userpage-item">
-
-                                        <Link key={item.imdb} to={`/details/${item.imdb}`}>
+                                    <div className="userpage-item" key={item.imdb}>
+                                        <Link to={`/details/${item.imdb}`}>
                                             <img src={item.poster} alt={`Poster for ${item.title}`} style={{ width: "100px" }} />
                                         </Link>
                                     </div>
