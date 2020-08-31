@@ -2,16 +2,14 @@ import React from 'react';
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-class ProfileFavorites extends React.Component {
-    render() {
-        const { favorites } = this.props;
+const ProfileFavorites = ({ favorites, count, email }) => {
         return (
             <div>
                 {favorites ?
                     <Card style={{ marginTop: "10px" }}>
-                        <Card.Header>Favorites</Card.Header>
+                        <Card.Header>Favorites {count > 5 ? <Link to={`/profile/${email}/favorites`}><span style={{float: "right"}}>See All</span></Link>: null}</Card.Header>
                         <Card.Body style={{ display: "flex", justifyContent: "space-evenly" }}>
-                            {favorites.slice(0, 5).map((item) => {
+                            {favorites.map((item) => {
                                 return (
                                     <OverlayTrigger
                                     placement="top"
@@ -33,8 +31,6 @@ class ProfileFavorites extends React.Component {
                     : null}
             </div>
         );
-    }
-
 }
 
 export default ProfileFavorites;

@@ -38,7 +38,7 @@ class UserProfile extends React.Component {
                         </Row>
                         <Row>
                             <Col>
-                                {this.state.user ? <ProfileFavorites favorites={this.state.user.favorites} /> : null}
+                                {this.state.user ? <ProfileFavorites favorites={this.state.user.favorites} count={this.state.user.favoriteCount} email={this.state.user.email} /> : null}
                             </Col>
                         </Row>
 
