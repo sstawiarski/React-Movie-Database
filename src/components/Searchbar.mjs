@@ -1,5 +1,5 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container'
+import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 
 class Searchbar extends React.Component {

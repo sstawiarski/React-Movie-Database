@@ -12,7 +12,8 @@ class SignIn extends React.Component {
         super(props);
         this.state = {
             email: '',
-            password: ''
+            password: '',
+            loginStatus: ''
         }
     }
 
@@ -26,13 +27,14 @@ class SignIn extends React.Component {
             this.props.history.push('/');
         } catch (error) {
             console.error('Could not log in user.')
+            this.setState({loginStatus: "failed"})
         }
 
     }
 
     handleChange = (e) => {
         const { value, type } = e.target;
-        this.setState({ [type]: value });
+        this.setState({ [type]: value, loginStatus: '' });
     }
 
     render() {
@@ -62,6 +64,7 @@ class SignIn extends React.Component {
                                 Submit
                 </Button>
                         </Form>
+                        {this.state.loginStatus === "failed" ? <div className="error-message"><span style={{color: "red", fontSize: "15px"}}>Incorrect username and/or password entered</span></div> : null}
                     </div>
                 </div>
                 <div className="sign-in-container" style={{ flex: "50%", marginLeft: "20px" }}>
