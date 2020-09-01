@@ -15,7 +15,8 @@ class EditProfile extends React.Component {
             profileText: '',
             username: '',
             age: '',
-            location: ''
+            location: '',
+            profilePicture: ''
         }
 
         this.baseState = this.state;
@@ -31,7 +32,8 @@ class EditProfile extends React.Component {
                     username: json.username,
                     profileText: json.profileText,
                     age: json.age,
-                    location: json.location
+                    location: json.location,
+                    profilePicture: json.profilePicture
                 })
             });
         })
@@ -48,10 +50,10 @@ class EditProfile extends React.Component {
             profileText: this.state.profileText,
             username: this.state.username,
             age: this.state.age,
+            profilePicture: this.state.profilePicture,
             location: this.state.location,
         };
 
-        console.log(body);
         fetch(`http://localhost:4000/profile/${this.state.email}`, {
             method: "PUT",
             headers: {
@@ -61,10 +63,10 @@ class EditProfile extends React.Component {
         })
         .then(response=>response.json())
         .catch(err => console.error(err.message))
-        .finally(
-            this.setState(this.baseState),
-            this.props.history.push(`/profile/${this.props.match.params.email}`)
-        );
+        .finally(() => {
+            this.setState(this.baseState);
+            this.props.history.push(`/profile/${this.props.match.params.email}`);
+        });
     }
 
     render() {
@@ -89,6 +91,15 @@ class EditProfile extends React.Component {
                                     </Form.Label>
                                 <Col sm="10">
                                     <Form.Control placeholder="Username" value={this.state.username} onChange={this.handleChange} />
+                                </Col>
+                            </Form.Group>
+
+                            <Form.Group as={Row} controlId="profilePicture">
+                                <Form.Label column sm="2">
+                                    Username
+                                    </Form.Label>
+                                <Col sm="10">
+                                    <Form.Control placeholder="Image URL" value={this.state.profilePicture} onChange={this.handleChange} />
                                 </Col>
                             </Form.Group>
 

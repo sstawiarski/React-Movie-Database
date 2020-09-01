@@ -16,6 +16,7 @@ router.get('/', async (req, res, err) => {
             firstPost.location = working.location;
             firstPost.profileText = working.profileText;
             firstPost.favorites = working.favorites;
+            firstPost.profilePicture = working.profilePicture;
         }
 
         res.status(200).json(JSON.stringify(firstPost));
@@ -38,7 +39,8 @@ router.get('/:id', async (req, res, err) => {
             firstPost.age = working.age;
             firstPost.location = working.location;
             firstPost.profileText = working.profileText;
-            firstPost.favorites = working.favorites.slice(0, 5);
+            firstPost.profilePicture = working.profilePicture;
+            firstPost.favorites = working.favorites.reverse().slice(0, 5);
             firstPost.favoriteCount = working.favorites.length;
         }
 
@@ -107,6 +109,7 @@ router.get('/favorites/:email/:id', async (req, res, err) => {
     }
 })
 
+//TODO: move to its own favorite routes file
 router.post('/favorites/:id', async (req, res, err) => {
     const id = req.params.id;
     const email = req.body.email;
