@@ -11,16 +11,19 @@ class EditProfile extends React.Component {
         super(props);
 
         this.state = {
-            email: this.props.match.params.email,
+            email: '',
             profileText: '',
             username: '',
             age: '',
             location: ''
         }
+
+        this.baseState = this.state;
     }
 
     componentDidMount() {
-        fetch(`http://localhost:4000/profile/${this.props.match.params.email}`)
+        this.setState({email: this.props.match.params.email }, () => {
+            fetch(`http://localhost:4000/profile/${this.props.match.params.email}`)
             .then(response => response.json())
             .then(json => {
                 json = JSON.parse(json);
@@ -31,6 +34,37 @@ class EditProfile extends React.Component {
                     location: json.location
                 })
             });
+        })
+    }
+
+    handleChange = (event) => {
+        const {id, value } = event.target;
+        this.setState({[id]: value})
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        const body = {
+            profileText: this.state.profileText,
+            username: this.state.username,
+            age: this.state.age,
+            location: this.state.location,
+        };
+
+        console.log(body);
+        fetch(`http://localhost:4000/profile/${this.state.email}`, {
+            method: "PUT",
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8' // Indicates the content 
+            },
+            body: JSON.stringify(body)
+        })
+        .then(response=>response.json())
+        .catch(err => console.error(err.message))
+        .finally(
+            this.setState(this.baseState),
+            this.props.history.push(`/profile/${this.props.match.params.email}`)
+        );
     }
 
     render() {
@@ -39,8 +73,8 @@ class EditProfile extends React.Component {
                 <Card bg="light">
                     <Card.Header>Edit profile information</Card.Header>
                     <Card.Body>
-                        <Form>
-                            <Form.Group as={Row} controlId="formPlaintextEmail">
+                        <Form onSubmit={this.handleSubmit}>
+                            <Form.Group as={Row} controlId="plaintextEmail">
                                 <Form.Label column sm="2">
                                     Email
                                     </Form.Label>
@@ -49,39 +83,39 @@ class EditProfile extends React.Component {
                                 </Col>
                             </Form.Group>
 
-                            <Form.Group as={Row} controlId="formUsername">
+                            <Form.Group as={Row} controlId="username">
                                 <Form.Label column sm="2">
                                     Username
                                     </Form.Label>
                                 <Col sm="10">
-                                    <Form.Control type="username" placeholder="Username" value={this.state.username}/>
+                                    <Form.Control placeholder="Username" value={this.state.username} onChange={this.handleChange} />
                                 </Col>
                             </Form.Group>
 
-                            <Form.Group as={Row} controlId="formAge">
+                            <Form.Group as={Row} controlId="age">
                                 <Form.Label column sm="2">
                                     Age
                                     </Form.Label>
                                 <Col sm="10">
-                                    <Form.Control type="age" placeholder="Age" value={this.state.age} />
+                                    <Form.Control placeholder="Age" value={this.state.age} onChange={this.handleChange} />
                                 </Col>
                             </Form.Group>
 
-                            <Form.Group as={Row} controlId="formLocation">
+                            <Form.Group as={Row} controlId="location">
                                 <Form.Label column sm="2">
                                     Location
                                     </Form.Label>
                                 <Col sm="10">
-                                    <Form.Control type="location" placeholder="Location" value={this.state.location} />
+                                    <Form.Control placeholder="Location" value={this.state.location} onChange={this.handleChange} />
                                 </Col>
                             </Form.Group>
 
-                            <Form.Group as={Row} controlId="formProfileText">
+                            <Form.Group as={Row} controlId="profileText">
                                 <Form.Label column sm="2">
                                     Profile text
                                     </Form.Label>
                                 <Col sm="10">
-                                    <Form.Control as="textarea" rows="5" value={this.state.profileText} />
+                                    <Form.Control as="textarea" rows="5" value={this.state.profileText} onChange={this.handleChange} />
                                 </Col>
                             </Form.Group>
 

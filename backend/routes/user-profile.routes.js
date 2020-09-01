@@ -38,7 +38,7 @@ router.get('/:id', async (req, res, err) => {
             firstPost.age = working.age;
             firstPost.location = working.location;
             firstPost.profileText = working.profileText;
-            firstPost.favorites = working.favorites.slice(0,5);
+            firstPost.favorites = working.favorites.slice(0, 5);
             firstPost.favoriteCount = working.favorites.length;
         }
 
@@ -48,6 +48,21 @@ router.get('/:id', async (req, res, err) => {
         res.status(401).json({ message: "Error retreving profile" });
     }
 });
+
+router.put('/:id', async (req, res, err) => {
+    const id = req.params.id;
+    const body = req.body;
+
+    console.log(body);
+
+    try {
+        await connection.collection('profiles').updateOne({"email": id}, { $set: body });
+        res.status(200).json({ message: "Successfully updated resource" })
+    }
+    catch (error) {
+        res.status(500).json({ message: "Error updating profile" })
+    }
+})
 
 router.get('/:id/all', async (req, res, err) => {
     const id = req.params.id;
@@ -74,23 +89,23 @@ router.get('/favorites/:email/:id', async (req, res, err) => {
 
     try {
         const favorite = connection.collection('profiles').find(
-            { 
+            {
                 "email": email,
                 "favorites": {
                     "$elemMatch": {
                         "imdb": id
                     }
                 }
-         });
+            });
 
-         if (await favorite.hasNext()) {
-            res.status(200).json({message: "Movie is in favorites", isInFavorites: true});
-         } else {
-            res.status(200).json({message: "Movie is NOT in favorites", isInFavorites: false});
-         }
+        if (await favorite.hasNext()) {
+            res.status(200).json({ message: "Movie is in favorites", isInFavorites: true });
+        } else {
+            res.status(200).json({ message: "Movie is NOT in favorites", isInFavorites: false });
+        }
     }
     catch (err) {
-        res.status(401).json({ message: "Error with favorites query",});
+        res.status(401).json({ message: "Error with favorites query", });
     }
 })
 
@@ -109,9 +124,9 @@ router.post('/favorites/:id', async (req, res, err) => {
             movie.imdb = working.imdb;
         }
 
-        await connection.collection('profiles').updateOne({"email": email}, {$push: {"favorites": movie} } )
+        await connection.collection('profiles').updateOne({ "email": email }, { $push: { "favorites": movie } })
 
-        res.status(200).json({message: "Added movie to favorites"});
+        res.status(200).json({ message: "Added movie to favorites" });
     }
     catch (err) {
         res.status(401).json({ message: "Error retreving favorites" });
@@ -124,9 +139,9 @@ router.delete('/favorites/:id', async (req, res, err) => {
 
     try {
 
-        await connection.collection('profiles').updateOne({"email": email}, {$pull: {"favorites": { "imdb": id }} } )
+        await connection.collection('profiles').updateOne({ "email": email }, { $pull: { "favorites": { "imdb": id } } })
 
-        res.status(200).json({message: "Remove movie from favorites"});
+        res.status(200).json({ message: "Remove movie from favorites" });
     }
     catch (err) {
         res.status(401).json({ message: "Error with favorites" });
