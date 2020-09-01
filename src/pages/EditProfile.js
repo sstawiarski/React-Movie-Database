@@ -3,7 +3,6 @@ import React from 'react';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card'
 
-import UserContext from '../UserContext';
 import { Row, Col, Button } from 'react-bootstrap';
 
 class EditProfile extends React.Component {
