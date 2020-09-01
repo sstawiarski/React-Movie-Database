@@ -9,8 +9,10 @@ const featuredMovie = require('./routes/featured-movie.routes');
 const moviedetails = require('./routes/movie-details.routes');
 const userProfile = require('./routes/user-profile.routes')
 const signIn = require('./routes/login.routes');
+const register = require('./routes/register.routes');
 const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
+const UserDetails = require('./models/users.model');
 
 const expressSession = require('express-session')({
     secret: '3COzsSaiAz1sGLYp7v5UEwezaneV9wPE',
@@ -19,7 +21,6 @@ const expressSession = require('express-session')({
 })
 
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
 require('dotenv').config();
 
 app.use(cors());
@@ -40,19 +41,12 @@ mongoose.connect(process.env.DB_URL, {
     app.use('/moviedetails', moviedetails);
     app.use('/profile', userProfile);
     app.use('/signin', signIn);
+    app.use('/register', register);
 
     app.listen(PORT, function () {
         console.log("Server is running on Port: " + PORT);
     });
 });
-
-const UserDetail = new Schema({
-    username: String,
-    password: String
-});
-
-UserDetail.plugin(passportLocalMongoose);
-const UserDetails = mongoose.model('userInfo', UserDetail, 'userInfo');
 
 passport.use(UserDetails.createStrategy());
 passport.serializeUser(UserDetails.serializeUser());

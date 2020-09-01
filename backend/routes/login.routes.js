@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const connection = mongoose.connection;
 const passport = require('passport');
 const connectEnsureLogin = require('connect-ensure-login');
+const UserDetails = require('../models/users.model');
 
 router.get('/', (req, res, err) => {
     res.send({message: "sign in page"});
