@@ -1,7 +1,34 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
+import styled from 'styled-components';
 import Card from 'react-bootstrap/Card';
+
+const Header = styled.h3`
+    margin-top: 10px;
+    text-align: center;
+`;
+
+const Image = styled.img`
+    width: 100px;
+    background: #eee;
+    border: 3px solid transparent;
+
+    &:hover {
+        background: #e1e1e1;
+        border: 3px solid black;
+    }
+`;
+
+const Grid = styled.div`
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(160px, 1fr));
+    width: 100%;
+    height: 100%;
+`;
+
+const GridItem = styled.div`
+    margin: 10px 0px 10px 10px;
+`;
 
 class FavoritesDetail extends React.Component {
     constructor(props) {
@@ -24,20 +51,26 @@ class FavoritesDetail extends React.Component {
     render() {
         return (
             <div className="favorites-detail-box">
-                <h3 className="userpage-header" style={{ marginTop: "10px", textAlign: "center" }}>{`${this.state.email}'s Favorites`}</h3>
+                <Header>{`${this.state.email}'s Favorites`}</Header>
                 <Card bg="light">
                     <Card.Body>
-                        <div className="item-grid">
+                        <Grid>
+
                             {this.state.favorites.map(item => {
                                 return (
-                                    <div className="userpage-item" key={item.imdb}>
+
+                                    <GridItem key={item.imdb}>
+
                                         <Link to={`/details/${item.imdb}`}>
-                                            <img className="poster" src={item.poster} alt={`Poster for ${item.title}`} style={{ width: "100px" }} />
+                                            <Image src={item.poster} alt={`Poster for ${item.title}`} />
                                         </Link>
-                                    </div>
+
+                                    </GridItem>
+                                    
                                 );
                             })}
-                        </div>
+
+                        </Grid>
                     </Card.Body>
                 </Card>
             </div>

@@ -8,6 +8,28 @@ import Alert from 'react-bootstrap/Alert';
 
 import UserContext from '../UserContext';
 
+import styled from 'styled-components';
+
+const AlertText = styled.p`
+    text-align: center;
+    margin-top: 5px;
+`;
+
+const Subsection = styled.h4`
+    margin-top: 20px;
+    font-weight: bold;
+`;
+
+const MinorDetails = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+`;
+
+const FlexItem = styled.div`
+    flex-basis: 33%;
+`;
+
 class MovieDetails extends React.Component {
     constructor(props) {
         super(props);
@@ -168,29 +190,34 @@ class MovieDetails extends React.Component {
         if (this.state.isFound) {
             return (
                     <div id="movie-details">
+
                         {this.state.successAdd ? 
                         <Alert variant="success" onClose={() => this.setState({successAdd: ''})} dismissible>
-                            <p style={{textAlign: "center", marginTop: "5px"}}>Movie added to favorites</p>
+                            <AlertText>Movie added to favorites</AlertText>
                         </Alert> : null}
                         {this.state.successAdd === false ? 
                         <Alert variant="danger" onClose={() => this.setState({successAdd: ''})} dismissible>
-                            <p style={{textAlign: "center", marginTop: "5px"}}>Movie could not be added to favorites</p>
+                            <AlertText>Movie could not be added to favorites</AlertText>
                         </Alert> : null}
                         {this.state.successRemove ? 
                         <Alert variant="success" onClose={() => this.setState({successRemove: ''})} dismissible>
-                            <p style={{textAlign: "center", marginTop: "5px"}}>Movie removed favorites</p>
+                            <AlertText>Movie removed favorites</AlertText>
                         </Alert> : null}
+
                         <Row>
                             <Col xs={16} md={8}>
                                 <Card bg="light">
                                     <Card.Header>Movie Details</Card.Header>
                                     <Card.Body>
                                         <h2 style={{ textAlign: "center" }}>{this.state.title} ({this.state.year})</h2>
-                                        <h4 className="subsection"><b>Plot Summary</b></h4>
+
+                                        <Subsection>Plot Summary</Subsection>
                                         <p>{this.state.plot}</p>
-                                        <h4 className="subsection"><b>Director</b></h4>
+
+                                        <Subsection>Director</Subsection>
                                         <p>{this.state.director}</p>
-                                        <h4 className="subsection"><b>Castlist</b></h4>
+
+                                        <Subsection>Castlist</Subsection>
                                         <Table striped bordered>
                                             <tbody>
                                                 {this.state.actors.split(',').map(actor => {
@@ -198,39 +225,41 @@ class MovieDetails extends React.Component {
                                                 })}
                                             </tbody>
                                         </Table>
-                                        <div className="additional-info" style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-evenly" }}>
-                                            <h4 className="subsection" style={{ flex: "100%" }}>Additional Information</h4>
 
-                                            <div className="additional-info-item">
+                                        <MinorDetails>
+                                            <Subsection style={{ flex: "100%" }}>Additional Information</Subsection>
+
+                                            <FlexItem>
                                                 <h5 className="subsection"><b>Writer</b></h5>
                                                 <p>{this.state.writer}</p>
-                                            </div>
+                                            </FlexItem>
 
-                                            <div className="additional-info-item">
+                                            <FlexItem>
                                                 <h5 className="subsection"><b>Runtime</b></h5>
                                                 <p>{this.state.runtime}</p>
-                                            </div>
+                                            </FlexItem>
 
-                                            <div className="additional-info-item">
+                                            <FlexItem>
                                                 <h5 className="subsection"><b>Box Office</b></h5>
                                                 <p>{this.state.boxOffice}</p>
-                                            </div>
+                                            </FlexItem>
 
-                                            <div className="additional-info-item">
+                                            <FlexItem>
                                                 <h5 className="subsection"><b>Production</b></h5>
                                                 <p>{this.state.production}</p>
-                                            </div>
+                                            </FlexItem>
 
-                                            <div className="additional-info-item">
+                                            <FlexItem>
                                                 <h5 className="subsection"><b>Release Date</b></h5>
                                                 <p>{this.state.released}</p>
-                                            </div>
+                                            </FlexItem>
 
-                                            <div className="additional-info-item">
+                                            <FlexItem>
                                                 <h5 className="subsection"><b>Rated</b></h5>
                                                 <p>{this.state.rated}</p>
-                                            </div>
-                                        </div>
+                                            </FlexItem>
+
+                                        </MinorDetails>
                                     </Card.Body>
                                 </Card>
                             </Col>
@@ -246,6 +275,7 @@ class MovieDetails extends React.Component {
                                         <p><b>Rated: </b> {this.state.rated}</p>
                                         <p><b>Runtime: </b> {this.state.runtime}</p>
                                         <p><b>IMDb Rating: </b> {this.state.rating}</p>
+
                                         <UserContext.Consumer>
                                             {value => {
                                                 if (value.user) {
@@ -258,6 +288,7 @@ class MovieDetails extends React.Component {
                                                 }
                                                  return (null)}}
                                         </UserContext.Consumer>
+                                        
                                     </Card.Body>
                                 </Card>
                             </Col>
