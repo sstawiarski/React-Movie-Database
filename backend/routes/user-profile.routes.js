@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-
+const passport = require('passport');
+const connectEnsureLogin = require('connect-ensure-login');
 const connection = mongoose.connection;
+const utils = require('../auth/utils');
 
-router.get('/', async (req, res, err) => {
+router.get('/', passport.authenticate('local', { failureRedirect: '/'}), async (req, res, err) => {
     try {
         let firstPost = {};
         const posts = connection.collection('profiles').find({}, { sort: { $natural: -1 } });
