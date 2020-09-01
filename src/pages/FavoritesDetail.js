@@ -4,7 +4,9 @@ import styled from 'styled-components';
 import Card from 'react-bootstrap/Card';
 
 import CollectionView from '../components/CollectionView'
+import WithSpinner from '../components/WithSpinner'
 
+const CollectionViewWithSpinner = WithSpinner(CollectionView);
 const Header = styled.h3`
     margin-top: 10px;
     text-align: center;
@@ -37,7 +39,8 @@ class FavoritesDetail extends React.Component {
         super(props);
         this.state = {
             email: this.props.match.params.email,
-            favorites: []
+            favorites: [],
+            isLoading: true
         }
     }
 
@@ -47,7 +50,9 @@ class FavoritesDetail extends React.Component {
             .then(json => {
                 json = JSON.parse(json);
                 this.setState({ favorites: json.favorites })
-            })
+            });
+
+            this.setState({isLoading: false})
     }
 
     render() {
@@ -76,7 +81,7 @@ class FavoritesDetail extends React.Component {
                     </Card.Body>
                 </Card>
                 <div id="collection">
-                    {this.state.favorites ? <CollectionView data={this.state.favorites} perPage={3} /> : null}
+                    <CollectionViewWithSpinner isLoading={this.state.isLoading} data={this.state.favorites} perPage={3} />
                 </div>
             </div>
         );

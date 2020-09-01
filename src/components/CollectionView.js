@@ -59,7 +59,7 @@ class CollectionView extends React.Component {
                         }) : null}
                     </tbody>
                 </Table>
-                <div className="pagination" style={{ left: "50%", transform: "translate(50%, 0%)" }}>
+                <div className="pagination" style={{ left: "50%", transform: "translate(40%, 0%)" }}>
                     {this.state.currentPage > 1 ? <Button variant="outline-primary" onClick={() => this.handlePageClick(-1)}>Previous</Button> : <Button variant="outline-primary" disabled>Previous</Button>}
                     {this.state.currentPage < this.state.pageCount ? <Button variant="outline-primary" style={{ margin: "0px 10px 0px 10px" }} onClick={() => this.handlePageClick(1)}>Next</Button> : <Button variant="outline-primary" style={{ margin: "0px 10px 0px 10px" }} disabled>Next</Button>}
                 </div>
