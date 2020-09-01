@@ -12,10 +12,12 @@ class SignIn extends React.Component {
         super(props);
         this.state = {
             email: '',
+            registerEmail: '',
             password: '',
             registerPassword: '',
             duplicatePassword: '',
             username: '',
+            registerUsername: '',
             isAdmin: false,
             loginStatus: ''
         }
@@ -36,8 +38,44 @@ class SignIn extends React.Component {
 
     }
 
+    handleRegister = async (event) => {
+        event.preventDefault();
+
+        if (this.state.registerPassword !== this.state.duplicatePassword) {
+            alert("ERROR: passwords do not match");
+            return;
+        }
+
+        const body = {
+            username: this.state.registerUsername,
+            email: this.state.registerEmail,
+            password: this.state.registerPassword,
+            isAdmin: this.state.isAdmin
+        }
+
+        const response = await fetch('http://localhost:4000/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+
+        const json = await response.json();
+
+        if (json.registerSuccess) {
+            alert("registration successful");
+            window.location = "/";
+        }
+        else {
+            alert("registration failed");
+        }
+
+    }
+
     handleChange = (e) => {
-        const { value, id } = e.target;
+        let { value, id } = e.target;
+        if (id === "isAdmin") value = e.target.checked;
         if (id === "registerPassword") ReactDOM.render(null, document.getElementById("incorrect-password"));
         this.setState({ [id]: value, loginStatus: '' });
     }
@@ -84,7 +122,7 @@ class SignIn extends React.Component {
                 <div className="sign-in-container" style={{ flex: "50%", marginLeft: "20px" }}>
                     <span className="label">Register</span>
                     <div className="sign-in-form" style={{ marginTop: "40px", marginRight: "10px" }}>
-                        <Form id="register-form" onSubmit={this.handleSubmit}>
+                        <Form id="register-form" onSubmit={this.handleRegister}>
                             <Form.Group controlId="registerEmail">
                                 <Form.Control
                                     type="email"
@@ -128,7 +166,7 @@ class SignIn extends React.Component {
                                     type="checkbox"
                                     value={this.state.isAdmin}
                                     onChange={this.handleChange}
-                                    required />
+                                />
                             </Form.Group>
 
                             <Button variant="primary" type="submit">
