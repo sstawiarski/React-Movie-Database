@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import Card from 'react-bootstrap/Card';
 
+import CollectionView from '../components/CollectionView'
+
 const Header = styled.h3`
     margin-top: 10px;
     text-align: center;
@@ -73,6 +75,9 @@ class FavoritesDetail extends React.Component {
                         </Grid>
                     </Card.Body>
                 </Card>
+                <div id="collection">
+                    {this.state.favorites ? <CollectionView data={this.state.favorites} perPage={3} /> : null}
+                </div>
             </div>
         );
     }
