@@ -32,7 +32,7 @@ class FavoritesDetail extends React.Component {
                                 return (
                                     <div className="userpage-item" key={item.imdb}>
                                         <Link to={`/details/${item.imdb}`}>
-                                            <img src={item.poster} alt={`Poster for ${item.title}`} style={{ width: "100px" }} />
+                                            <img className="poster" src={item.poster} alt={`Poster for ${item.title}`} style={{ width: "100px" }} />
                                         </Link>
                                     </div>
                                 );
