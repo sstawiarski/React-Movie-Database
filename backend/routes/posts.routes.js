@@ -3,6 +3,8 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const Posting = require('../models/posting.model');
 const connection = mongoose.connection;
+const passport = require('passport');
+const connectEnsureLogin = require('connect-ensure-login');
 
 router.get('/', async (req, res, err) => {
     try {
