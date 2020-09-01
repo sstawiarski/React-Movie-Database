@@ -53,8 +53,6 @@ router.put('/:id', async (req, res, err) => {
     const id = req.params.id;
     const body = req.body;
 
-    console.log(body);
-
     try {
         await connection.collection('profiles').updateOne({"email": id}, { $set: body });
         res.status(200).json({ message: "Successfully updated resource" })
