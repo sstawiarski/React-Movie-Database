@@ -14,7 +14,7 @@ router.post('/', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) return next(err);
 
-        if (!user) return res.redirect('/signin')
+        if (!user) return res.redirect('/signin');
 
         req.logIn(user, (err) => {
             if (err) return next(err);

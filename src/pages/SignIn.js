@@ -27,6 +27,21 @@ class SignIn extends React.Component {
         event.preventDefault();
 
         const { email, password } = this.state;
+
+        const body = {
+            username: this.state.username,
+            password: this.state.password,
+        }
+
+        const response = await fetch('http://localhost:4000/signin', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        })
+
+        /*
         try {
             await auth.signInWithEmailAndPassword(email, password);
             this.setState({ email: '', password: '' });
@@ -35,6 +50,7 @@ class SignIn extends React.Component {
             console.error('Could not log in user.')
             this.setState({ loginStatus: "failed" })
         }
+        */
 
     }
 
@@ -96,11 +112,11 @@ class SignIn extends React.Component {
                     <span className="label">Sign In</span>
                     <div className="sign-in-form" style={{ marginTop: "40px", marginRight: "10px" }}>
                         <Form id="sign-in-entry" onSubmit={this.handleSubmit}>
-                            <Form.Group controlId="email">
+                            <Form.Group controlId="username">
                                 <Form.Control
-                                    type="email"
-                                    value={this.state.email}
-                                    placeholder="Enter email"
+                                    type="username"
+                                    value={this.state.username}
+                                    placeholder="Enter username"
                                     onChange={this.handleChange}
                                     required />
                             </Form.Group>
