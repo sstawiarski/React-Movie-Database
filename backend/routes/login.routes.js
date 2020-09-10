@@ -6,10 +6,6 @@ const passport = require('passport');
 const connectEnsureLogin = require('connect-ensure-login');
 const UserDetails = require('../models/users.model');
 
-router.get('/', (req, res, err) => {
-    res.send({message: "sign in page"});
-});
-
 router.post('/', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) return next(err);
@@ -18,7 +14,11 @@ router.post('/', (req, res, next) => {
 
         req.logIn(user, (err) => {
             if (err) return next(err);
-            return res.json({message: "user logged in", isLoggedIn: true});
+            return res.json({
+                message: "user logged in",
+                isLoggedIn: true,
+                user: user.username,
+                isAdmin: user.isAdmin});
         });
     })(req, res, next);
 });
