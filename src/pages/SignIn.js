@@ -4,69 +4,93 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button'
 
 import { withRouter } from 'react-router-dom'
-
+import { store } from '../authentication/UserProvider'
 import { auth } from '../firebase/firebase.utils';
 
-class SignIn extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            email: '',
-            registerEmail: '',
-            password: '',
-            registerPassword: '',
-            duplicatePassword: '',
-            username: '',
-            registerUsername: '',
-            isAdmin: false,
-            loginStatus: ''
-        }
-    }
+const SignIn = (props) => {
 
-    handleSubmit = async (event) => {
+    const userState = React.useContext(store);
+    const { dispatch } = userState;
+
+    const [{
+        email,
+        registerEmail,
+        password,
+        registerPassword,
+        duplicatePassword,
+        username,
+        registerUsername,
+        isAdmin,
+        loginStatus,
+    }, setState] = React.useState({
+        email: '',
+        registerEmail: '',
+        password: '',
+        registerPassword: '',
+        duplicatePassword: '',
+        username: '',
+        registerUsername: '',
+        isAdmin: false,
+        loginStatus: ''
+    })
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
-
-        const { email, password } = this.state;
 
         const body = {
-            username: this.state.username,
-            password: this.state.password,
+            username: username,
+            password: password,
         }
 
-        const response = await fetch('http://localhost:4000/signin', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(body)
-        })
 
-        /*
         try {
-            await auth.signInWithEmailAndPassword(email, password);
-            this.setState({ email: '', password: '' });
-            this.props.history.push('/');
-        } catch (error) {
-            console.error('Could not log in user.')
-            this.setState({ loginStatus: "failed" })
+            const response = await fetch('http://localhost:4000/signin', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(body)
+            })
+
+            const json = await response.json();
+
+            dispatch({
+                type: 'login', payload: {
+                    user: json.user,
+                    isAdmin: json.isAdmin
+                }
+            })
+            props.history.push("/")
+        } catch (err) {
+            setState({
+                email: '',
+                registerEmail: '',
+                password: '',
+                registerPassword: '',
+                duplicatePassword: '',
+                username: '',
+                registerUsername: '',
+                isAdmin: false,
+                loginStatus: 'failed'
+            });
+
         }
-        */
 
     }
 
-    handleRegister = async (event) => {
+    const handleRegister = async (event) => {
         event.preventDefault();
 
-        if (this.state.registerPassword !== this.state.duplicatePassword) {
+        if (registerPassword !== duplicatePassword) {
             alert("ERROR: passwords do not match");
             return;
         }
 
         const body = {
-            username: this.state.registerUsername,
-            email: this.state.registerEmail,
-            password: this.state.registerPassword,
-            isAdmin: this.state.isAdmin
+            username: registerUsername,
+            email: registerEmail,
+            password: registerPassword,
+            isAdmin: isAdmin
         }
 
         const response = await fetch('http://localhost:4000/register', {
@@ -81,7 +105,7 @@ class SignIn extends React.Component {
 
         if (json.registerSuccess) {
             alert("registration successful");
-            window.location = "/";
+            props.history.push("/")
         }
         else {
             alert("registration failed");
@@ -89,111 +113,116 @@ class SignIn extends React.Component {
 
     }
 
-    handleChange = (e) => {
+    const handleChange = (e) => {
         let { value, id } = e.target;
         if (id === "isAdmin") value = e.target.checked;
         if (id === "registerPassword") ReactDOM.render(null, document.getElementById("incorrect-password"));
-        this.setState({ [id]: value, loginStatus: '' });
+        setState(prevState => ({
+            ...prevState,
+            [id]: value,
+            loginStatus: ''
+        }))
     }
 
-    handleDuplicateChange = (e) => {
+    const handleDuplicateChange = (e) => {
         const { value, id } = e.target;
-        this.setState({ [id]: value }, () => {
-            if (this.state["registerPassword"] !== this.state["duplicatePassword"]) {
-                ReactDOM.render(<span style={{ color: "red", fontSize: "10px" }}>Passwords do not match.</span>, document.getElementById("incorrect-password"))
-            }
-        });
+        setState(prevState => ({
+            ...prevState,
+            [id]: value
+        }))
+
+        if (registerPassword !== duplicatePassword) {
+            ReactDOM.render(<span style={{ color: "red", fontSize: "10px" }}>Passwords do not match.</span>, document.getElementById("incorrect-password"))
+        }
     }
 
-    render() {
-        return (
-            <div className="sign-in" style={{ display: "flex" }}>
-                <div className="sign-in-container" style={{ flex: "50%" }}>
-                    <span className="label">Sign In</span>
-                    <div className="sign-in-form" style={{ marginTop: "40px", marginRight: "10px" }}>
-                        <Form id="sign-in-entry" onSubmit={this.handleSubmit}>
-                            <Form.Group controlId="username">
-                                <Form.Control
-                                    type="username"
-                                    value={this.state.username}
-                                    placeholder="Enter username"
-                                    onChange={this.handleChange}
-                                    required />
-                            </Form.Group>
-                            <Form.Group controlId="password">
-                                <Form.Control
-                                    type="password"
-                                    value={this.state.password}
-                                    placeholder="Password"
-                                    onChange={this.handleChange}
-                                    required />
-                            </Form.Group>
-                            <Button variant="primary" type="submit">
-                                Submit
+    return (
+        <div className="sign-in" style={{ display: "flex" }}>
+            <div className="sign-in-container" style={{ flex: "50%" }}>
+                <span className="label">Sign In</span>
+                <div className="sign-in-form" style={{ marginTop: "40px", marginRight: "10px" }}>
+                    <Form id="sign-in-entry" onSubmit={handleSubmit}>
+                        <Form.Group controlId="username">
+                            <Form.Control
+                                type="username"
+                                value={username}
+                                placeholder="Enter username"
+                                onChange={handleChange}
+                                required />
+                        </Form.Group>
+                        <Form.Group controlId="password">
+                            <Form.Control
+                                type="password"
+                                value={password}
+                                placeholder="Password"
+                                onChange={handleChange}
+                                required />
+                        </Form.Group>
+                        <Button variant="primary" type="submit">
+                            Submit
                 </Button>
-                        </Form>
-                        {this.state.loginStatus === "failed" ? <div className="error-message"><span style={{ color: "red", fontSize: "15px" }}>Incorrect username and/or password entered</span></div> : null}
-                    </div>
-                </div>
-                <div className="sign-in-container" style={{ flex: "50%", marginLeft: "20px" }}>
-                    <span className="label">Register</span>
-                    <div className="sign-in-form" style={{ marginTop: "40px", marginRight: "10px" }}>
-                        <Form id="register-form" onSubmit={this.handleRegister}>
-                            <Form.Group controlId="registerEmail">
-                                <Form.Control
-                                    type="email"
-                                    value={this.state.registerEmail}
-                                    placeholder="Email"
-                                    onChange={this.handleChange}
-                                    required />
-                            </Form.Group>
-                            <Form.Group controlId="registerUsername">
-                                <Form.Control
-                                    type="username"
-                                    value={this.state.registerUsername}
-                                    placeholder="Username"
-                                    onChange={this.handleChange}
-                                    required />
-                            </Form.Group>
-                            <Form.Group controlId="registerPassword">
-                                <Form.Control
-                                    type="password"
-                                    value={this.state.registerPassword}
-                                    placeholder="Password"
-                                    onChange={this.handleChange}
-                                    required />
-                            </Form.Group>
-
-                            <Form.Group controlId="duplicatePassword">
-                                <Form.Control
-                                    type="password"
-                                    value={this.state.duplicatePassword}
-                                    placeholder="Confirm password"
-                                    onChange={this.handleDuplicateChange}
-                                    required />
-                                <div id="incorrect-password">
-
-                                </div>
-                            </Form.Group>
-
-                            <Form.Group controlId="isAdmin">
-                                <Form.Label>Is admin?</Form.Label>
-                                <Form.Control
-                                    type="checkbox"
-                                    value={this.state.isAdmin}
-                                    onChange={this.handleChange}
-                                />
-                            </Form.Group>
-
-                            <Button variant="primary" type="submit">
-                                Submit
-                            </Button>
-                        </Form>
-                    </div>
+                    </Form>
+                    {loginStatus === "failed" ? <div className="error-message"><span style={{ color: "red", fontSize: "15px" }}>Incorrect username and/or password entered</span></div> : null}
                 </div>
             </div>
-        );
-    }
+            <div className="sign-in-container" style={{ flex: "50%", marginLeft: "20px" }}>
+                <span className="label">Register</span>
+                <div className="sign-in-form" style={{ marginTop: "40px", marginRight: "10px" }}>
+                    <Form id="register-form" onSubmit={handleRegister}>
+                        <Form.Group controlId="registerEmail">
+                            <Form.Control
+                                type="email"
+                                value={registerEmail}
+                                placeholder="Email"
+                                onChange={handleChange}
+                                required />
+                        </Form.Group>
+                        <Form.Group controlId="registerUsername">
+                            <Form.Control
+                                type="username"
+                                value={registerUsername}
+                                placeholder="Username"
+                                onChange={handleChange}
+                                required />
+                        </Form.Group>
+                        <Form.Group controlId="registerPassword">
+                            <Form.Control
+                                type="password"
+                                value={registerPassword}
+                                placeholder="Password"
+                                onChange={handleChange}
+                                required />
+                        </Form.Group>
+
+                        <Form.Group controlId="duplicatePassword">
+                            <Form.Control
+                                type="password"
+                                value={duplicatePassword}
+                                placeholder="Confirm password"
+                                onChange={handleDuplicateChange}
+                                required />
+                            <div id="incorrect-password">
+
+                            </div>
+                        </Form.Group>
+
+                        <Form.Group controlId="isAdmin">
+                            <Form.Label>Is admin?</Form.Label>
+                            <Form.Control
+                                type="checkbox"
+                                value={isAdmin}
+                                onChange={handleChange}
+                            />
+                        </Form.Group>
+
+                        <Button variant="primary" type="submit">
+                            Submit
+                            </Button>
+                    </Form>
+                </div>
+            </div>
+        </div>
+    );
 
 }
 
