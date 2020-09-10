@@ -8,11 +8,11 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Container from 'react-bootstrap/Container'
 
-import UserContext from '../UserContext'
+import { store } from '../authentication/UserProvider'
 
 const Home = () => {
-    const context = useContext(UserContext);
-    const loggedInAdmin = (context.user && context.isAdmin);
+    const context = useContext(store);
+    const loggedInAdmin = (context.state.user && context.state.isAdmin);
     return (
         <Container className="main-content">
             <Row>

@@ -6,64 +6,53 @@ import ProfileFavorites from '../components/Profile/Profile-Favorites';
 
 import { Container, Row, Col } from 'react-bootstrap';
 
-import UserContext from '../UserContext';
+import { store } from '../authentication/UserProvider';
 
-class UserProfile extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: null
-        }
-    }
+const UserProfile = (props) => {
 
+    const [user, setUser] = React.useState(null);
 
-    componentDidMount() {
-        this.fetchInfo();
-    }
+    React.useEffect( () => {
+        fetchInfo();
+    }, [])
 
 
-    fetchInfo = async () => {
-        fetch(`http://localhost:4000/profile/${this.props.match.params.email}`)
+    const fetchInfo = async () => {
+        fetch(`http://localhost:4000/profile/${props.match.params.username}`)
             .then(response => response.json())
-            .then(json => this.setState({ user: JSON.parse(json) }));
+            .then(json => setUser(json));
     }
 
-    render() {
+        const value = React.useContext(store);
+        const { contextUser, isAdmin } = value.state;
+
         return (
                 <Container className="main-content">
-                    <UserContext.Consumer>
-                        {value => {
-                            if (value.user) {
-                                if (value.user.email === this.props.match.params.email || value.isAdmin) {
-                                    return <div className="edit-profile-button"><Link to={`/profile/${this.props.match.params.email}/edit`}><span>Edit profile</span></Link></div>
-                                } else {
-                                    return null;
-                                }
-                            }
-                        }}
-                    </UserContext.Consumer>
+
+                        {user && (user.username === props.match.params.username || isAdmin) ? <div className="edit-profile-button"><Link to={`/profile/${props.match.params.username}/edit`}><span>Edit profile</span></Link></div> : null }
+
+                        
                     <Row>
                         <Col xs={12} md={8}>
                             <Row>
                                 <Col>
-                                    {this.state.user ? <ProfileBody profileText={this.state.user.profileText} /> : null}
+                                    {user ? <ProfileBody profileText={user.profileText} /> : null}
                                 </Col>
                             </Row>
                             <Row>
                                 <Col>
-                                    {this.state.user ? <ProfileFavorites favorites={this.state.user.favorites} count={this.state.user.favoriteCount} email={this.state.user.email} /> : null}
+                                    {user ? <ProfileFavorites favorites={user.favorites} count={user.favoriteCount} username={user.username} /> : null}
                                 </Col>
                             </Row>
 
                         </Col>
 
                         <Col xs={12} md={4}>
-                            {this.state.user ? <ProfileSidebar userInfo={this.state.user} /> : null}
+                            {user ? <ProfileSidebar userInfo={user} /> : null}
                         </Col>
                     </Row>
                 </Container>
         );
-    }
 }
 
 
