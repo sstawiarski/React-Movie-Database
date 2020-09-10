@@ -5,6 +5,7 @@ const connection = mongoose.connection;
 const passport = require('passport');
 const connectEnsureLogin = require('connect-ensure-login');
 const UserDetails = require('../models/users.model');
+const ProfileDetails = require('../models/profile.model');
 
 router.post('/', async (req, res, next) => {
     try {
@@ -22,6 +23,16 @@ router.post('/', async (req, res, next) => {
                 },
                 req.body.password
             );
+            await ProfileDetails.create({
+                username: req.body.username,
+                email: req.body.email,
+                age: null,
+                location: "",
+                profileText: "",
+                profilePicture: "",
+                favorites: []
+            });
+
             res.send({message: "User registered", registerSuccess: true})
         }
     } catch (err) {
