@@ -10,8 +10,6 @@ import Movies from './pages/Movies';
 import SignIn from './pages/SignIn';
 import About from './pages/About';
 import MovieDetails from './pages/MovieDetails'
-
-import UserProvider from './UserProvider';
 import UserProfile from './pages/UserProfile';
 import FavoritesDetail from './pages/FavoritesDetail';
 import EditProfile from './pages/EditProfile';
@@ -27,7 +25,6 @@ class App extends React.Component {
 
   render() {
     return (
-      <UserProvider>
         <div className="App">
           <Container>
             <Profile />
@@ -44,9 +41,9 @@ class App extends React.Component {
               <Route exact path="/details/:id" render={(props) => <MovieDetails isText={false} {...props} />} />
               <Route exact path="/search/:title" render={(props) => <MovieDetails isText={true} {...props} />} />
               <Route exact path="/signin" component={SignIn} />
-              <Route exact path="/profile/:email" component={UserProfile} />
-              <Route exact path="/profile/:email/favorites" component={FavoritesDetail} />
-              <Route exact path="/profile/:email/edit" component={EditProfile} />
+              <Route exact path="/profile/:username" component={UserProfile} />
+              <Route exact path="/profile/:username/favorites" component={FavoritesDetail} />
+              <Route exact path="/profile/:username/edit" component={EditProfile} />
             </Switch>
           </Container>
           {this.state.searchTerm && this.state.isSearching && <Redirect to={{
@@ -54,7 +51,6 @@ class App extends React.Component {
             state: { title: encodeURI(this.state.searchTerm) }
           }} />}
         </div>
-      </UserProvider>
     );
   }
 

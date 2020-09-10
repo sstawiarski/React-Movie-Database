@@ -4,9 +4,10 @@ const mongoose = require('mongoose');
 const passport = require('passport');
 const connectEnsureLogin = require('connect-ensure-login');
 const connection = mongoose.connection;
-const utils = require('../auth/utils');
+const { checkIsAdmin } = require('../auth/utils');
+const ProfileDetails = require('../models/profile.model');
 
-router.get('/', passport.authenticate('local', { failureRedirect: '/'}), async (req, res, err) => {
+router.get('/', checkIsAdmin, async (req, res, err) => {
     try {
         let firstPost = {};
         const posts = connection.collection('profiles').find({}, { sort: { $natural: -1 } });
@@ -21,7 +22,7 @@ router.get('/', passport.authenticate('local', { failureRedirect: '/'}), async (
             firstPost.profilePicture = working.profilePicture;
         }
 
-        res.status(200).json(JSON.stringify(firstPost));
+        res.status(200).json(firstPost);
     }
     catch (err) {
         res.status(401).json({ message: "Error retreving first profile" });
@@ -33,7 +34,7 @@ router.get('/:id', async (req, res, err) => {
 
     try {
         let firstPost = {};
-        const posts = connection.collection('profiles').find({ "email": id });
+        const posts = connection.collection('profiles').find({ "username": id });
         if (await posts.hasNext()) {
             const working = await posts.next();
             firstPost.username = working.username;
@@ -46,7 +47,7 @@ router.get('/:id', async (req, res, err) => {
             firstPost.favoriteCount = working.favorites.length;
         }
 
-        res.status(200).json(JSON.stringify(firstPost));
+        res.status(200).json(firstPost);
     }
     catch (err) {
         res.status(401).json({ message: "Error retreving profile" });
@@ -56,9 +57,14 @@ router.get('/:id', async (req, res, err) => {
 router.put('/:id', async (req, res, err) => {
     const id = req.params.id;
     const body = req.body;
-
+    console.log(id)
     try {
-        await connection.collection('profiles').updateOne({"email": id}, { $set: body });
+        await ProfileDetails.updateOne({ username: id }, { 
+                age: req.body.hasOwnProperty("age") ? req.body.age : null,
+                location: req.body.hasOwnProperty("location") ? req.body.location : "",
+                profileText: req.body.hasOwnProperty("profileText") ? req.body.profileText : "",
+                profilePicture: req.body.hasOwnProperty("profilePicture") ? req.body.profilePicture : "",
+         });
         res.status(200).json({ message: "Successfully updated resource" })
     }
     catch (error) {
@@ -71,28 +77,28 @@ router.get('/:id/all', async (req, res, err) => {
 
     try {
         let firstPost = {};
-        const posts = connection.collection('profiles').find({ "email": id });
+        const posts = connection.collection('profiles').find({ "username": id });
         if (await posts.hasNext()) {
             const working = await posts.next();
             firstPost.favorites = working.favorites;
             firstPost.foundFavorites = true;
         }
 
-        res.status(200).json(JSON.stringify(firstPost));
+        res.status(200).json(firstPost);
     }
     catch (err) {
         res.status(401).json({ message: "Error retreving favorites" });
     }
 });
 
-router.get('/favorites/:email/:id', async (req, res, err) => {
+router.get('/favorites/:username/:id', async (req, res, err) => {
     const id = req.params.id;
-    const email = req.params.email;
+    const username = req.params.username;
 
     try {
         const favorite = connection.collection('profiles').find(
             {
-                "email": email,
+                "username": username,
                 "favorites": {
                     "$elemMatch": {
                         "imdb": id
@@ -114,7 +120,7 @@ router.get('/favorites/:email/:id', async (req, res, err) => {
 //TODO: move to its own favorite routes file
 router.post('/favorites/:id', async (req, res, err) => {
     const id = req.params.id;
-    const email = req.body.email;
+    const username = req.body.username;
 
     try {
         let movie = {};
@@ -127,7 +133,7 @@ router.post('/favorites/:id', async (req, res, err) => {
             movie.imdb = working.imdb;
         }
 
-        await connection.collection('profiles').updateOne({ "email": email }, { $push: { "favorites": movie } })
+        await connection.collection('profiles').updateOne({ "username": username }, { $push: { "favorites": movie } })
 
         res.status(200).json({ message: "Added movie to favorites" });
     }
@@ -138,11 +144,11 @@ router.post('/favorites/:id', async (req, res, err) => {
 
 router.delete('/favorites/:id', async (req, res, err) => {
     const id = req.params.id;
-    const email = req.body.email;
+    const username = req.body.username;
 
     try {
 
-        await connection.collection('profiles').updateOne({ "email": email }, { $pull: { "favorites": { "imdb": id } } })
+        await connection.collection('profiles').updateOne({ "username": username }, { $pull: { "favorites": { "imdb": id } } })
 
         res.status(200).json({ message: "Remove movie from favorites" });
     }

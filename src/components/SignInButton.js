@@ -1,19 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ReactComponent as UserLogo } from '../assets/user-male-circle.svg'
-import { auth } from '../firebase/firebase.utils'
-import UserContext from '../UserContext'
+import { store } from '../authentication/UserProvider'
 
-const Profile = () => {
-    const context = React.useContext(UserContext);
-    const currentUser = context.user;
+const Profile = (props) => {
+    const context = React.useContext(store);
+    const { user } = context.state;
+    const { dispatch } = context;
+
+    const signOut = async () => {
+        await fetch(`http://localhost:4000/logout`)
+        dispatch({type: 'logout'});
+    }
+
     return (
         <div className="profile">
             {
-                currentUser ?
+                user ?
                     <div>
-                        <Link to="/" className="profile-text" onClick={() => auth.signOut()}>Sign Out</Link>
-                        <Link to={`/profile/${currentUser.email}`}>
+                        <Link to="/" className="profile-text" onClick={signOut}>Sign Out</Link>
+                        <Link to={`/profile/${user}`}>
                             <UserLogo className="profile-image" />
                         </Link>
                     </div>
@@ -25,9 +31,8 @@ const Profile = () => {
                         </Link>
                     </div>
             }
-
         </div>
     )
-};
+}
 
 export default Profile;

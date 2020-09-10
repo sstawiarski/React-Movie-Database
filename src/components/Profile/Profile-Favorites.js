@@ -19,13 +19,13 @@ const DetailsLink = styled.span`
     float: right;
 `;
 
-const ProfileFavorites = ({ favorites, count, email }) => {
+const ProfileFavorites = ({ favorites, count, username }) => {
         return (
             <div>
 
                 {favorites ?
                     <Card style={{ marginTop: "10px" }}>
-                        <Card.Header>Favorites {count > 5 ? <Link to={`/profile/${email}/favorites`}><DetailsLink>See All</DetailsLink></Link>: null}</Card.Header>
+                        <Card.Header>Favorites {count > 5 ? <Link to={`/profile/${username}/favorites`}><DetailsLink>See All</DetailsLink></Link>: null}</Card.Header>
 
                         <Card.Body style={{ display: "flex", justifyContent: "space-evenly" }}>
 
