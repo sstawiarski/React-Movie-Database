@@ -6,6 +6,7 @@ const passport = require('passport');
 const FeaturedMovie = require('../models/featuredMovie.model').FeaturedMovie;
 
 const connection = mongoose.connection;
+const { checkIsAdmin } = require('../auth/utils');
 
 router.get('/', async (req, res, err) => {
 
@@ -31,7 +32,7 @@ router.get('/', async (req, res, err) => {
 
 });
 
-router.post('/', async (req, res, err) => {
+router.post('/', checkIsAdmin, async (req, res, err) => {
     let newMovie = req.body;
 
     const newFeaturedMovie = new FeaturedMovie({

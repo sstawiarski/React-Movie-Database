@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-
 const connection = mongoose.connection;
+const { checkIsAdmin } = require('../auth/utils');
 
 router.get('/', async (req, res, err) => {
 
@@ -55,7 +55,7 @@ router.get('/:title', async (req, res, err) => {
 
 });
 
-router.post('/', async (req, res, err) => {
+router.post('/', checkIsAdmin, async (req, res, err) => {
     let newMovie = req.body;
     console.log("Added: "+ newMovie);
 

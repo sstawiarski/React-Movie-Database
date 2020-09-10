@@ -5,6 +5,8 @@ const Posting = require('../models/posting.model');
 const connection = mongoose.connection;
 const passport = require('passport');
 const connectEnsureLogin = require('connect-ensure-login');
+const UserDetails = require('../models/users.model');
+const { checkIsAdmin } = require('../auth/utils');
 
 router.get('/', async (req, res, err) => {
     try {
@@ -61,7 +63,7 @@ router.get('/:id', async (req, res, err) => {
     }
 });
 
-router.post('/', async (req, res, err) => {
+router.post('/', checkIsAdmin, async (req, res, err) => {
     try {
         const latest = connection.collection('postings').find({}, { sort: { $natural: -1 } });
         let latestId = null;
@@ -95,5 +97,7 @@ router.post('/', async (req, res, err) => {
         res.status(401).send({message: "Cannot add new movie", success: false});
     }
 })
+
+
 
 module.exports = router;

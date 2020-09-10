@@ -13,6 +13,8 @@ const register = require('./routes/register.routes');
 const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
 const UserDetails = require('./models/users.model');
+const cookieParser = require('cookie-parser')
+const LocalStrategy = require('passport-local').Strategy; 
 
 const expressSession = require('express-session')({
     secret: '3COzsSaiAz1sGLYp7v5UEwezaneV9wPE',
@@ -25,6 +27,7 @@ require('dotenv').config();
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(expressSession);
 app.use(passport.initialize());
 app.use(passport.session());
@@ -48,6 +51,6 @@ mongoose.connect(process.env.DB_URL, {
     });
 });
 
-passport.use(UserDetails.createStrategy());
+passport.use(new LocalStrategy(UserDetails.authenticate()));
 passport.serializeUser(UserDetails.serializeUser());
 passport.deserializeUser(UserDetails.deserializeUser());

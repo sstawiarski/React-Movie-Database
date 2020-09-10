@@ -8,8 +8,15 @@ const checkIsAdmin = (req, res, next) => {
     if (!req.user.isAdmin) {
         return res.redirect('/');
     }
+    return next();
+}
+
+const checkAuthentication = (req, res, next) => {
+    if (!req.isAuthenticated()) {
+        return res.redirect('/');
+    }
 
     return next();
 }
 
-module.exports = checkIsAdmin;
+module.exports = { checkIsAdmin, checkAuthentication };
