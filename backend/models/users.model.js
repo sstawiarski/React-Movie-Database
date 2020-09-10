@@ -10,9 +10,7 @@ const UserDetail = new Schema({
 });
 
 UserDetail.plugin(passportLocalMongoose, {
-    findByUsername: (model, queryParameters) => {
-        return model.findOne(queryParameters);
-    }
+    usernameField: "username"
 });
 
 const UserDetails = mongoose.model('userInfo', UserDetail, 'userInfo');
