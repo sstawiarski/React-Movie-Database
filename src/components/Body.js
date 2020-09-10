@@ -1,53 +1,58 @@
 import React from 'react';
-import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button'
+
 import ReactMarkdown from 'react-markdown';
 
-class Body extends React.Component {
+import Card from 'react-bootstrap/Card';
+import Button from 'react-bootstrap/Button'
 
-    constructor(props) {
-        super(props);
-        this.findFirst = this.findFirst.bind(this);
-        this.handleClick = this.handleClick.bind(this);
+const Body = (props) => {
 
-        this.state = {
-            postDate: null,
-            postMessage: null,
-            nextPost: null,
-            isNextPost: false,
-            isPostBefore: false,
-            postBefore: null
-        };
-    }
+    const [{
+        postDate,
+        postMessage,
+        nextPost,
+        isNextPost,
+        isPostBefore,
+        postBefore
+    }, setState] = React.useState({
+        postDate: null,
+        postMessage: null,
+        nextPost: null,
+        isNextPost: false,
+        isPostBefore: false,
+        postBefore: null
+    })
 
-    async findFirst() {
+    const getPosts = async () => {
         try {
             const res = await fetch('http://localhost:4000/postings');
             const parse = await res.json();
             const json = JSON.parse(parse);
 
-            this.setState({ postDate: new Date(json.date).toLocaleDateString() });
-            this.setState({ postMessage: json.content });
-
-            if (json.previous === "") {
-                this.setState({ isNextPost: false });
-            } else {
-                this.setState({ isNextPost: true, nextPost: json.previous });
-            }
+            setState({ 
+                postDate: new Date(json.date).toLocaleDateString(), 
+                postMessage: json.content,
+                isNextPost: json.previous === "" ? false : true,
+                nextPost: json.previous === "" ? null : json.previous
+             });
         }
         catch (err) {
             console.log(err);
         }
     }
 
-    handleClick(event) {
+    React.useEffect(() => {
+        getPosts()
+    }, [])
+
+    const handleClick = (event) => {
         event.preventDefault();
 
         let postToGoTo;
         if (event.target.id === "previous-btn") {
-            postToGoTo = this.state.nextPost;
+            postToGoTo = nextPost;
         } else if (event.target.id === "next-btn") {
-            postToGoTo = this.state.postBefore;
+            postToGoTo = postBefore;
         }
 
         fetch(`http://localhost:4000/postings/${postToGoTo}`)
@@ -74,7 +79,7 @@ class Body extends React.Component {
                     prevId = null;
                     beforeId = null;
                 }
-                this.setState({
+                setState({
                     postDate: new Date(json.date).toLocaleDateString(),
                     postMessage: json.content,
                     nextPost: prevId,
@@ -86,29 +91,23 @@ class Body extends React.Component {
 
     }
 
-    componentDidMount() {
-        this.findFirst().catch(err => console.log(err));
-    }
+    return (
+        <Card>
+            <Card.Header>News and Updates</Card.Header>
+            <Card.Body>
+                {postDate ?
+                    <div>
+                        <p id="post-date">{postDate}</p>
 
-    render() {
-        return (
-            <Card>
-                <Card.Header>News and Updates</Card.Header>
-                <Card.Body>
-                    {this.state.postDate ?
-                        <div>
-                            <p id="post-date">{this.state.postDate}</p>
+                        <div id="post-content">{postMessage && <ReactMarkdown source={postMessage.replace(/\n/gi, '\n &nbsp;')} />}</div>
 
-                            <div id="post-content">{this.state.postMessage && <ReactMarkdown source={this.state.postMessage.replace(/\n/gi, '\n &nbsp;')} />}</div>
-
-                            <div id="post-navigation">
-                                {this.state.isNextPost && <Button variant="link" id="previous-btn" onClick={this.handleClick}>Previous Post</Button>}
-                                {this.state.isPostBefore && <Button variant="link" id="next-btn" onClick={this.handleClick}>Next Post</Button>}
-                            </div></div> : <p id="posts-missing">Posts not found</p>}
-                </Card.Body>
-            </Card>
-        );
-    }
+                        <div id="post-navigation">
+                            {isNextPost && <Button variant="link" id="previous-btn" onClick={handleClick}>Previous Post</Button>}
+                            {isPostBefore && <Button variant="link" id="next-btn" onClick={handleClick}>Next Post</Button>}
+                        </div></div> : <p id="posts-missing">Posts not found</p>}
+            </Card.Body>
+        </Card>
+    );
 }
 
 export { Body };

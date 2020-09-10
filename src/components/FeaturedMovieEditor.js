@@ -3,21 +3,14 @@ import Card from 'react-bootstrap/Card'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form';
 
-class FeaturedMovieEditor extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            value: ""
-        };
+const FeaturedMovieEditor = (props) => {
 
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-    }
+    const [value, setValue] = React.useState("");
 
-    handleSubmit(event) {
+    const handleSubmit = (event) => {
         event.preventDefault();
         let newMovie;
-        fetch(`http://omdbapi.com/?apikey=cc276c76&i=${this.state.value}`)
+        fetch(`http://omdbapi.com/?apikey=cc276c76&i=${value}`)
             .then(res => res.json())
             .then(json => {
                 newMovie = {
@@ -51,28 +44,27 @@ class FeaturedMovieEditor extends React.Component {
                 }
             })
             .catch(err => alert("Could not fetch new movie."));
-        this.setState({ value: "" });
+        setValue("");
     }
 
-    handleChange(event) {
-        this.setState({ value: event.target.value });
+    const handleChange = (event) => {
+        setValue(event.target.value);
     }
 
-    render() {
-        return (
-            <Card bg={this.props.bg} id="featured-movie-edit">
-                <Card.Header>Change Featured Movie</Card.Header>
-                <Card.Body>
-                    <Form onSubmit={this.handleSubmit}>
-                        <Form.Group controlId="featuredMovieId">
-                            <Form.Control type="text" onChange={this.handleChange} value={this.state.value} placeholder="Enter new IMDb ID..." />
-                        </Form.Group>
-                        <Button variant="primary" type="submit">Submit</Button>
-                    </Form>
-                </Card.Body>
-            </Card>
-        );
-    }
+    return (
+        <Card bg={props.bg} id="featured-movie-edit">
+            <Card.Header>Change Featured Movie</Card.Header>
+            <Card.Body>
+                <Form onSubmit={handleSubmit}>
+                    <Form.Group controlId="featuredMovieId">
+                        <Form.Control type="text" onChange={handleChange} value={value} placeholder="Enter new IMDb ID..." />
+                    </Form.Group>
+                    <Button variant="primary" type="submit">Submit</Button>
+                </Form>
+            </Card.Body>
+        </Card>
+    );
+
 }
 
 export default FeaturedMovieEditor;
