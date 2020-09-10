@@ -6,7 +6,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 
-import UserContext from '../UserContext';
+import { store } from '../authentication/UserProvider';
 
 import styled from 'styled-components';
 
@@ -275,8 +275,8 @@ class MovieDetails extends React.Component {
                                         <p><b>Rated: </b> {this.state.rated}</p>
                                         <p><b>Runtime: </b> {this.state.runtime}</p>
                                         <p><b>IMDb Rating: </b> {this.state.rating}</p>
-
-                                        <UserContext.Consumer>
+                                            {
+                                        /**<UserContext.Consumer>
                                             {value => {
                                                 if (value.user) {
                                                     this.checkFavorite(this.state.imdb, value.user.email);
@@ -287,7 +287,7 @@ class MovieDetails extends React.Component {
                                                     }
                                                 }
                                                  return (null)}}
-                                        </UserContext.Consumer>
+                                            </UserContext.Consumer>**/}
                                         
                                     </Card.Body>
                                 </Card>
