@@ -5,7 +5,6 @@ import Button from 'react-bootstrap/Button'
 
 import { withRouter } from 'react-router-dom'
 import { store } from '../authentication/UserProvider'
-import { auth } from '../firebase/firebase.utils';
 
 const SignIn = (props) => {
 
@@ -13,7 +12,6 @@ const SignIn = (props) => {
     const { dispatch } = userState;
 
     const [{
-        email,
         registerEmail,
         password,
         registerPassword,
@@ -23,7 +21,6 @@ const SignIn = (props) => {
         isAdmin,
         loginStatus,
     }, setState] = React.useState({
-        email: '',
         registerEmail: '',
         password: '',
         registerPassword: '',
