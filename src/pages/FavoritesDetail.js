@@ -37,34 +37,33 @@ const GridItem = styled.div`
 const FavoritesDetail = (props) => {
 
     const [{
-        email,
+        username,
         favorites,
         isLoading
     }, setState] = React.useState({
-            email: props.match.params.email,
+            username: props.match.params.username,
             favorites: [],
             isLoading: true
     })
 
     React.useEffect(() => {
-        fetch(`http://localhost:4000/profile/${email}/all`)
+        fetch(`http://localhost:4000/profile/${props.match.params.username}/all`)
         .then(response => response.json())
         .then(json => {
-            json = JSON.parse(json);
             setState({ favorites: json.favorites })
         });
 
         setState({isLoading: false})
-    }, [email]);
+    }, [props.match.params.username]);
 
         return (
             <div className="favorites-detail-box">
-                <Header>{`${email}'s Favorites`}</Header>
+                <Header>{`${props.match.params.username}'s Favorites`}</Header>
                 <Card bg="light">
                     <Card.Body>
                         <Grid>
 
-                            {favorites.map(item => {
+                            {favorites ? favorites.map(item => {
                                 return (
 
                                     <GridItem key={item.imdb}>
@@ -76,13 +75,13 @@ const FavoritesDetail = (props) => {
                                     </GridItem>
                                     
                                 );
-                            })}
+                            }): null}
 
                         </Grid>
                     </Card.Body>
                 </Card>
                 <div id="collection">
-                    <CollectionViewWithSpinner isLoading={isLoading} data={favorites} perPage={3} />
+                    {favorites ? <CollectionViewWithSpinner isLoading={isLoading} data={favorites} perPage={3} /> : null }
                 </div>
             </div>
         );
