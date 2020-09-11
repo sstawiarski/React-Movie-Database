@@ -12,7 +12,10 @@ import About from './pages/About';
 import MovieDetails from './pages/MovieDetails'
 import UserProfile from './pages/UserProfile';
 import FavoritesDetail from './pages/FavoritesDetail';
+import ForumDetails from './pages/ForumDetails';
 import EditProfile from './pages/EditProfile';
+import ForumThread from './pages/ForumThread';
+import Forums from './pages/Forums'
 
 class App extends React.Component {
   constructor(props) {
@@ -38,6 +41,9 @@ class App extends React.Component {
               <Route exact path="/" component={Home} />
               <Route path="/movies" component={Movies} />
               <Route path="/about" component={About} />
+              <Route exact path="/forums" component={Forums} />
+              <Route exact path="/forums/:id" component={ForumDetails} />
+              <Route exact path="/forums/:id/:threadId" component={ForumThread} />
               <Route exact path="/details/:id" render={(props) => <MovieDetails isText={false} {...props} />} />
               <Route exact path="/search/:title" render={(props) => <MovieDetails isText={true} {...props} />} />
               <Route exact path="/signin" component={SignIn} />

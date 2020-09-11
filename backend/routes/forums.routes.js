@@ -142,7 +142,8 @@ router.get('/:forumId/:threadId', async (req, res, err) => {
         });
 
         for (let i = 0; i < posts1.length && i < 25; i++) {
-            firstFewPosts.posts.push(posts1[i].forumPosts);
+            firstFewPosts.postsFound = true;
+            firstFewPosts.posts.push(posts1[i].forumPosts[i]);
         }
 
         res.status(200).json(firstFewPosts);

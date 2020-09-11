@@ -28,6 +28,7 @@ const Navigation = (props) => {
                     <Nav className="mr-auto">
                         <Nav.Link href="/">Home</Nav.Link>
                         <Nav.Link href="/movies">Movies</Nav.Link>
+                        <Nav.Link href="/forums">Forums</Nav.Link>
                         <Nav.Link href="/about">About</Nav.Link>
                     </Nav>
                     <Form onSubmit={handleSearch} inline>
