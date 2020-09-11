@@ -25,7 +25,7 @@ const CollectionView = (props) => {
             data: props.data.slice(0, props.perPage),
             pageCount: Math.ceil(props.data.length / props.perPage)
         })
-    }, [props.data]);
+    }, [props.data, props.perPage]);
 
     const handlePageClick = (direction) => {
         let offset = Math.ceil(currentPage * props.perPage) * direction;
@@ -39,7 +39,7 @@ const CollectionView = (props) => {
     React.useEffect(() => {
         const length = origData.length > offset + props.perPage ? offset + props.perPage : origData.length;
         setState({ data: origData.slice(offset, length) })
-    }, [offset, currentPage])
+    }, [offset, currentPage, origData, props.perPage])
 
         return (
             <div className="collection-view">

@@ -55,7 +55,7 @@ const FavoritesDetail = (props) => {
         });
 
         setState({isLoading: false})
-    }, [props.match.params.email]);
+    }, [email]);
 
         return (
             <div className="favorites-detail-box">

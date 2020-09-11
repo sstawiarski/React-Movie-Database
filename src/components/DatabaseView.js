@@ -6,9 +6,9 @@ import Table from 'react-bootstrap/Table';
 const DatabaseView = (props) => {
 
     const [movies, setMovies] = React.useState([]);
-    const searchTerm = encodeURI(props.searchTerm);
 
     React.useEffect(() => {
+        const searchTerm = encodeURI(props.searchTerm);
         if (searchTerm) {
             try {
                 fetch(`http://localhost:4000/movielist/${searchTerm}`)
@@ -26,7 +26,7 @@ const DatabaseView = (props) => {
 
     return (
         <Container id="database-view">
-            {searchTerm ? <Table striped bordered hover>
+            {movies ? <Table striped bordered hover>
                 <thead>
                     <tr>
                         <th>IMDb ID</th>

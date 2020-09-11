@@ -12,47 +12,46 @@ const UserProfile = (props) => {
 
     const [user, setUser] = React.useState(null);
 
-    React.useEffect( () => {
+    React.useEffect(() => {
+        const fetchInfo = async () => {
+            fetch(`http://localhost:4000/profile/${props.match.params.username}`)
+                .then(response => response.json())
+                .then(json => setUser(json));
+        }
         fetchInfo();
-    }, [])
+    }, [props.match.params.username])
 
 
-    const fetchInfo = async () => {
-        fetch(`http://localhost:4000/profile/${props.match.params.username}`)
-            .then(response => response.json())
-            .then(json => setUser(json));
-    }
+    const value = React.useContext(store);
+    const { isAdmin } = value.state;
 
-        const value = React.useContext(store);
-        const { contextUser, isAdmin } = value.state;
+    return (
+        <Container className="main-content">
 
-        return (
-                <Container className="main-content">
+            {user && (user.username === props.match.params.username || isAdmin) ? <div className="edit-profile-button"><Link to={`/profile/${props.match.params.username}/edit`}><span>Edit profile</span></Link></div> : null}
 
-                        {user && (user.username === props.match.params.username || isAdmin) ? <div className="edit-profile-button"><Link to={`/profile/${props.match.params.username}/edit`}><span>Edit profile</span></Link></div> : null }
 
-                        
+            <Row>
+                <Col xs={12} md={8}>
                     <Row>
-                        <Col xs={12} md={8}>
-                            <Row>
-                                <Col>
-                                    {user ? <ProfileBody profileText={user.profileText} /> : null}
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    {user ? <ProfileFavorites favorites={user.favorites} count={user.favoriteCount} username={user.username} /> : null}
-                                </Col>
-                            </Row>
-
-                        </Col>
-
-                        <Col xs={12} md={4}>
-                            {user ? <ProfileSidebar userInfo={user} /> : null}
+                        <Col>
+                            {user ? <ProfileBody profileText={user.profileText} /> : null}
                         </Col>
                     </Row>
-                </Container>
-        );
+                    <Row>
+                        <Col>
+                            {user ? <ProfileFavorites favorites={user.favorites} count={user.favoriteCount} username={user.username} /> : null}
+                        </Col>
+                    </Row>
+
+                </Col>
+
+                <Col xs={12} md={4}>
+                    {user ? <ProfileSidebar userInfo={user} /> : null}
+                </Col>
+            </Row>
+        </Container>
+    );
 }
 
 

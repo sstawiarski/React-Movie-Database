@@ -23,22 +23,22 @@ const EditProfile = (props) => {
         profilePicture: ''
     })
 
-    const getProfileInfo = async () => {
-        const response = await fetch(`http://localhost:4000/profile/${username}`);
-        let json = await response.json();
-        setState({
-            profileText: json.profileText,
-            age: json.age,
-            location: json.location,
-            profilePicture: json.profilePicture,
-            email: json.email,
-            username: json.username
-        })
-    }
-
     React.useEffect(() => {
+        const getProfileInfo = async () => {
+            const response = await fetch(`http://localhost:4000/profile/${username}`);
+            let json = await response.json();
+            setState({
+                profileText: json.profileText,
+                age: json.age,
+                location: json.location,
+                profilePicture: json.profilePicture,
+                email: json.email,
+                username: json.username
+            })
+        }
+
         getProfileInfo();
-    }, []);
+    }, [username]);
 
     const handleChange = (event) => {
         const { id, value } = event.target;
