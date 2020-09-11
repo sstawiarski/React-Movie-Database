@@ -130,7 +130,7 @@ class MovieDetails extends React.Component {
         }
 
         try {
-            await fetch(`http://localhost:4000/profile/favorites/${imdbID}`, {
+            await fetch(`http://localhost:4000/favorites/${imdbID}`, {
                 method: "POST",
                 mode: "cors",
                 cache: "no-cache",
@@ -154,7 +154,7 @@ class MovieDetails extends React.Component {
         }
 
         try {
-            await fetch(`http://localhost:4000/profile/favorites/${imdbID}`, {
+            await fetch(`http://localhost:4000/favorites/${imdbID}`, {
                 method: "DELETE",
                 mode: "cors",
                 cache: "no-cache",
@@ -174,7 +174,7 @@ class MovieDetails extends React.Component {
 
     checkFavorite = (imdbID, username) => {
         try {
-            fetch(`http://localhost:4000/profile/favorites/${username}/${imdbID}`)
+            fetch(`http://localhost:4000/favorites/${username}/${imdbID}`)
             .then(response => response.json())
             .then(json => {
                 if (json.isInFavorites) {

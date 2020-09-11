@@ -10,6 +10,7 @@ const moviedetails = require('./routes/movie-details.routes');
 const userProfile = require('./routes/user-profile.routes')
 const signIn = require('./routes/login.routes');
 const register = require('./routes/register.routes');
+const favorites = require('./routes/favorites.routes');
 const passport = require('passport');
 const passportLocalMongoose = require('passport-local-mongoose');
 const UserDetails = require('./models/users.model');
@@ -45,6 +46,7 @@ mongoose.connect(process.env.DB_URL, {
     app.use('/profile', userProfile);
     app.use('/signin', signIn);
     app.use('/register', register);
+    app.use('/favorites', favorites);
 
     app.listen(PORT, function () {
         console.log("Server is running on Port: " + PORT);

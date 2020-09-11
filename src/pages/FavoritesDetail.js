@@ -47,7 +47,7 @@ const FavoritesDetail = (props) => {
     })
 
     React.useEffect(() => {
-        fetch(`http://localhost:4000/profile/${props.match.params.username}/all`)
+        fetch(`http://localhost:4000/favorites/${props.match.params.username}/all`)
         .then(response => response.json())
         .then(json => {
             setState({ favorites: json.favorites })
