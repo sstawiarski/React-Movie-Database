@@ -29,7 +29,7 @@ router.get('/', async (req, res, err) => {
     }
 });
 
-router.post('/', checkIsAdmin, async (req, res, err) => {
+router.post('/', async (req, res, err) => {
     const forumName = req.body.forumName;
     const id = req.body.id;
 
@@ -38,11 +38,12 @@ router.post('/', checkIsAdmin, async (req, res, err) => {
             name: forumName,
             id: id
         });
-        res.sendStatus(200).json({
+        res.status(200).json({
             message: `Forum successfully created with name ${forumName}`,
+            success: true
         });
     } catch (err) {
-
+        res.status(401).json({message: "Error creating forum", success: false})
     }
 
 });
