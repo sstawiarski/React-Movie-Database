@@ -30,6 +30,8 @@ const FlexItem = styled.div`
     flex-basis: 33%;
 `;
 
+const Consumer = store.Consumer;
+
 class MovieDetails extends React.Component {
     constructor(props) {
         super(props);
@@ -122,9 +124,9 @@ class MovieDetails extends React.Component {
         this.setState({ isMounted: false });
     }
 
-    addFavorite = async (imdbID, email) => {
+    addFavorite = async (imdbID, username) => {
         const body = {
-            email: email
+            username: username
         }
 
         try {
@@ -146,9 +148,9 @@ class MovieDetails extends React.Component {
 
     }
 
-    removeFavorite = async (imdbID, email) => {
+    removeFavorite = async (imdbID, username) => {
         const body = {
-            email: email
+            username: username
         }
 
         try {
@@ -170,9 +172,9 @@ class MovieDetails extends React.Component {
 
     }
 
-    checkFavorite = (imdbID, email) => {
+    checkFavorite = (imdbID, username) => {
         try {
-            fetch(`http://localhost:4000/profile/favorites/${email}/${imdbID}`)
+            fetch(`http://localhost:4000/profile/favorites/${username}/${imdbID}`)
             .then(response => response.json())
             .then(json => {
                 if (json.isInFavorites) {
@@ -275,20 +277,19 @@ class MovieDetails extends React.Component {
                                         <p><b>Rated: </b> {this.state.rated}</p>
                                         <p><b>Runtime: </b> {this.state.runtime}</p>
                                         <p><b>IMDb Rating: </b> {this.state.rating}</p>
-                                            {
-                                        /**<UserContext.Consumer>
+
+                                        <Consumer>
                                             {value => {
-                                                if (value.user) {
-                                                    this.checkFavorite(this.state.imdb, value.user.email);
+                                                if (value.state.user) {
+                                                    this.checkFavorite(this.state.imdb, value.state.user);
                                                     if (!this.state.isFavorited) {
-                                                        return (<Button onClick={()=> this.addFavorite(this.state.imdb, value.user.email)}>Add to favorites</Button>)
+                                                        return (<Button onClick={()=> this.addFavorite(this.state.imdb, value.state.user)}>Add to favorites</Button>)
                                                     } else {
-                                                        return (<Button variant="outline-danger" onClick={()=> this.removeFavorite(this.state.imdb, value.user.email)}>Remove from favorites</Button>)
+                                                        return (<Button variant="outline-danger" onClick={()=> this.removeFavorite(this.state.imdb, value.state.user)}>Remove from favorites</Button>)
                                                     }
                                                 }
                                                  return (null)}}
-                                            </UserContext.Consumer>**/}
-                                        
+                                            </Consumer>
                                     </Card.Body>
                                 </Card>
                             </Col>
