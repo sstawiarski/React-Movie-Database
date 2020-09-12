@@ -17,48 +17,41 @@ import EditProfile from './pages/EditProfile';
 import ForumThread from './pages/ForumThread';
 import Forums from './pages/Forums'
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchTerm: "",
-      isSearching: false
-    }
-  }
+const App = (props) => {
 
-  render() {
-    return (
-        <div className="App">
-          <Container>
-            <Profile />
-            <Navigation bg="light" handleSearch={(term) => {
-              this.setState({
-                searchTerm: term,
-                isSearching: true
-              })
-            }} />
-            <Switch>
-              <Route exact path="/" component={Home} />
-              <Route path="/movies" component={Movies} />
-              <Route path="/about" component={About} />
-              <Route exact path="/forums" component={Forums} />
-              <Route exact path="/forums/:id" component={ForumDetails} />
-              <Route exact path="/forums/:id/:threadId" component={ForumThread} />
-              <Route exact path="/details/:id" render={(props) => <MovieDetails isText={false} {...props} />} />
-              <Route exact path="/search/:title" render={(props) => <MovieDetails isText={true} {...props} />} />
-              <Route exact path="/signin" component={SignIn} />
-              <Route exact path="/profile/:username" component={UserProfile} />
-              <Route exact path="/profile/:username/favorites" component={FavoritesDetail} />
-              <Route exact path="/profile/:username/edit" component={EditProfile} />
-            </Switch>
-          </Container>
-          {this.state.searchTerm && this.state.isSearching && <Redirect to={{
-            pathname: `/search/${encodeURI(this.state.searchTerm)}`,
-            state: { title: encodeURI(this.state.searchTerm) }
-          }} />}
-        </div>
-    );
-  }
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const [isSearching, setIsSearching] = React.useState(false);
+
+
+  return (
+    <div className="App">
+      <Container>
+        <Profile />
+        <Navigation bg="light" handleSearch={(term) => {
+          setSearchTerm(term);
+          setIsSearching(true);
+        }} />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/movies" component={Movies} />
+          <Route path="/about" component={About} />
+          <Route exact path="/forums" component={Forums} />
+          <Route exact path="/forums/:id" component={ForumDetails} />
+          <Route exact path="/forums/:id/:threadId" component={ForumThread} />
+          <Route exact path="/details/:id" render={(props) => <MovieDetails isText={false} {...props} />} />
+          <Route exact path="/search/:title" render={(props) => <MovieDetails isText={true} {...props} />} />
+          <Route exact path="/signin" component={SignIn} />
+          <Route exact path="/profile/:username" component={UserProfile} />
+          <Route exact path="/profile/:username/favorites" component={FavoritesDetail} />
+          <Route exact path="/profile/:username/edit" component={EditProfile} />
+        </Switch>
+      </Container>
+      {searchTerm && isSearching && <Redirect to={{
+        pathname: `/search/${encodeURI(searchTerm)}`,
+        state: { title: encodeURI(searchTerm) }
+      }} />}
+    </div>
+  );
 
 }
 
