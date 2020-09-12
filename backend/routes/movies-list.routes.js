@@ -47,10 +47,19 @@ router.get('/:title', async (req, res, err) => {
             response.push(curMovie);
         }
 
-        res.status(200).json(response);
+        if (response.length) {
+            res.status(200).json({
+                foundItems: response,
+                success: true
+            });
+        }
+
+        else {
+            throw Error();
+        }
     }
     catch {
-        res.status(401).send({ message: "Failed to search movies from database" });
+        res.status(401).send({ message: "Failed to search movies from database", success: false });
     }
 
 });

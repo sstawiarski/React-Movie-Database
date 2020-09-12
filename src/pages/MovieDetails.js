@@ -51,7 +51,7 @@ class MovieDetails extends React.Component {
             boxOffice: null,
             production: null,
             released: null,
-            rated: null, 
+            rated: null,
             successAdd: '',
             isFavorited: false,
             successRemove: ''
@@ -90,10 +90,13 @@ class MovieDetails extends React.Component {
                 .catch(err => console.log(err));
 
         } else {
-            fetch(`http://localhost:4000/movielist/${this.props.location.state.title}`)
+            fetch(`http://localhost:4000/movielist/${this.props.match.params.title}`)
                 .then(res => res.json())
                 .then(json => {
-                    json = json[0];
+                    if (!json.success) {
+                        return;
+                    }
+                    json = json.foundItems[0];
                     if (this.state.isMounted) {
                         this.setState({
                             title: json.title,
@@ -139,11 +142,11 @@ class MovieDetails extends React.Component {
                 },
                 body: JSON.stringify(body)
             });
-            this.setState({successAdd: true});
+            this.setState({ successAdd: true });
         }
         catch (error) {
             console.error(error.message)
-            this.setState({successAdd: false});
+            this.setState({ successAdd: false });
         }
 
     }
@@ -163,11 +166,11 @@ class MovieDetails extends React.Component {
                 },
                 body: JSON.stringify(body)
             });
-            this.setState({isFavorited: false, successRemove: true});
+            this.setState({ isFavorited: false, successRemove: true });
         }
         catch (error) {
             console.error(error.message)
-            this.setState({successRemove: false});
+            this.setState({ successRemove: false });
         }
 
     }
@@ -175,12 +178,12 @@ class MovieDetails extends React.Component {
     checkFavorite = (imdbID, username) => {
         try {
             fetch(`http://localhost:4000/favorites/${username}/${imdbID}`)
-            .then(response => response.json())
-            .then(json => {
-                if (json.isInFavorites) {
-                    this.setState({isFavorited: true})
-                }
-            });
+                .then(response => response.json())
+                .then(json => {
+                    if (json.isInFavorites) {
+                        this.setState({ isFavorited: true })
+                    }
+                });
 
         }
         catch (error) {
@@ -191,110 +194,111 @@ class MovieDetails extends React.Component {
     render() {
         if (this.state.isFound) {
             return (
-                    <div id="movie-details">
+                <div id="movie-details">
 
-                        {this.state.successAdd ? 
-                        <Alert variant="success" onClose={() => this.setState({successAdd: ''})} dismissible>
+                    {this.state.successAdd ?
+                        <Alert variant="success" onClose={() => this.setState({ successAdd: '' })} dismissible>
                             <AlertText>Movie added to favorites</AlertText>
                         </Alert> : null}
-                        {this.state.successAdd === false ? 
-                        <Alert variant="danger" onClose={() => this.setState({successAdd: ''})} dismissible>
+                    {this.state.successAdd === false ?
+                        <Alert variant="danger" onClose={() => this.setState({ successAdd: '' })} dismissible>
                             <AlertText>Movie could not be added to favorites</AlertText>
                         </Alert> : null}
-                        {this.state.successRemove ? 
-                        <Alert variant="success" onClose={() => this.setState({successRemove: ''})} dismissible>
+                    {this.state.successRemove ?
+                        <Alert variant="success" onClose={() => this.setState({ successRemove: '' })} dismissible>
                             <AlertText>Movie removed favorites</AlertText>
                         </Alert> : null}
 
-                        <Row>
-                            <Col xs={16} md={8}>
-                                <Card bg="light">
-                                    <Card.Header>Movie Details</Card.Header>
-                                    <Card.Body>
-                                        <h2 style={{ textAlign: "center" }}>{this.state.title} ({this.state.year})</h2>
+                    <Row>
+                        <Col xs={16} md={8}>
+                            <Card bg="light">
+                                <Card.Header>Movie Details</Card.Header>
+                                <Card.Body>
+                                    <h2 style={{ textAlign: "center" }}>{this.state.title} ({this.state.year})</h2>
 
-                                        <Subsection>Plot Summary</Subsection>
-                                        <p>{this.state.plot}</p>
+                                    <Subsection>Plot Summary</Subsection>
+                                    <p>{this.state.plot}</p>
 
-                                        <Subsection>Director</Subsection>
-                                        <p>{this.state.director}</p>
+                                    <Subsection>Director</Subsection>
+                                    <p>{this.state.director}</p>
 
-                                        <Subsection>Castlist</Subsection>
-                                        <Table striped bordered>
-                                            <tbody>
-                                                {this.state.actors.split(',').map(actor => {
-                                                    return (<tr key={actor}><td>{actor}</td></tr>)
-                                                })}
-                                            </tbody>
-                                        </Table>
+                                    <Subsection>Castlist</Subsection>
+                                    <Table striped bordered>
+                                        <tbody>
+                                            {this.state.actors.split(',').map(actor => {
+                                                return (<tr key={actor}><td>{actor}</td></tr>)
+                                            })}
+                                        </tbody>
+                                    </Table>
 
-                                        <MinorDetails>
-                                            <Subsection style={{ flex: "100%" }}>Additional Information</Subsection>
+                                    <MinorDetails>
+                                        <Subsection style={{ flex: "100%" }}>Additional Information</Subsection>
 
-                                            <FlexItem>
-                                                <h5 className="subsection"><b>Writer</b></h5>
-                                                <p>{this.state.writer}</p>
-                                            </FlexItem>
+                                        <FlexItem>
+                                            <h5 className="subsection"><b>Writer</b></h5>
+                                            <p>{this.state.writer}</p>
+                                        </FlexItem>
 
-                                            <FlexItem>
-                                                <h5 className="subsection"><b>Runtime</b></h5>
-                                                <p>{this.state.runtime}</p>
-                                            </FlexItem>
+                                        <FlexItem>
+                                            <h5 className="subsection"><b>Runtime</b></h5>
+                                            <p>{this.state.runtime}</p>
+                                        </FlexItem>
 
-                                            <FlexItem>
-                                                <h5 className="subsection"><b>Box Office</b></h5>
-                                                <p>{this.state.boxOffice}</p>
-                                            </FlexItem>
+                                        <FlexItem>
+                                            <h5 className="subsection"><b>Box Office</b></h5>
+                                            <p>{this.state.boxOffice}</p>
+                                        </FlexItem>
 
-                                            <FlexItem>
-                                                <h5 className="subsection"><b>Production</b></h5>
-                                                <p>{this.state.production}</p>
-                                            </FlexItem>
+                                        <FlexItem>
+                                            <h5 className="subsection"><b>Production</b></h5>
+                                            <p>{this.state.production}</p>
+                                        </FlexItem>
 
-                                            <FlexItem>
-                                                <h5 className="subsection"><b>Release Date</b></h5>
-                                                <p>{this.state.released}</p>
-                                            </FlexItem>
+                                        <FlexItem>
+                                            <h5 className="subsection"><b>Release Date</b></h5>
+                                            <p>{this.state.released}</p>
+                                        </FlexItem>
 
-                                            <FlexItem>
-                                                <h5 className="subsection"><b>Rated</b></h5>
-                                                <p>{this.state.rated}</p>
-                                            </FlexItem>
+                                        <FlexItem>
+                                            <h5 className="subsection"><b>Rated</b></h5>
+                                            <p>{this.state.rated}</p>
+                                        </FlexItem>
 
-                                        </MinorDetails>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
+                                    </MinorDetails>
+                                </Card.Body>
+                            </Card>
+                        </Col>
 
-                            <Col xs={16} md={4}>
-                                <Card bg="light">
-                                    <Card.Header>Quick Info</Card.Header>
-                                    <Card.Body>
-                                        <Card.Img src={this.state.poster} className="featured-movie-poster" />
-                                        <br />
-                                        <p><b>Director: </b> {this.state.director}</p>
-                                        <p><b>Summary: </b> {this.state.plot}</p>
-                                        <p><b>Rated: </b> {this.state.rated}</p>
-                                        <p><b>Runtime: </b> {this.state.runtime}</p>
-                                        <p><b>IMDb Rating: </b> {this.state.rating}</p>
+                        <Col xs={16} md={4}>
+                            <Card bg="light">
+                                <Card.Header>Quick Info</Card.Header>
+                                <Card.Body>
+                                    <Card.Img src={this.state.poster} className="featured-movie-poster" />
+                                    <br />
+                                    <p><b>Director: </b> {this.state.director}</p>
+                                    <p><b>Summary: </b> {this.state.plot}</p>
+                                    <p><b>Rated: </b> {this.state.rated}</p>
+                                    <p><b>Runtime: </b> {this.state.runtime}</p>
+                                    <p><b>IMDb Rating: </b> {this.state.rating}</p>
 
-                                        <Consumer>
-                                            {value => {
-                                                if (value.state.user) {
-                                                    this.checkFavorite(this.state.imdb, value.state.user);
-                                                    if (!this.state.isFavorited) {
-                                                        return (<Button onClick={()=> this.addFavorite(this.state.imdb, value.state.user)}>Add to favorites</Button>)
-                                                    } else {
-                                                        return (<Button variant="outline-danger" onClick={()=> this.removeFavorite(this.state.imdb, value.state.user)}>Remove from favorites</Button>)
-                                                    }
+                                    <Consumer>
+                                        {value => {
+                                            if (value.state.user) {
+                                                this.checkFavorite(this.state.imdb, value.state.user);
+                                                if (!this.state.isFavorited) {
+                                                    return (<Button onClick={() => this.addFavorite(this.state.imdb, value.state.user)}>Add to favorites</Button>)
+                                                } else {
+                                                    return (<Button variant="outline-danger" onClick={() => this.removeFavorite(this.state.imdb, value.state.user)}>Remove from favorites</Button>)
                                                 }
-                                                 return (null)}}
-                                            </Consumer>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        </Row>
-                    </div>
+                                            }
+                                            return (null)
+                                        }}
+                                    </Consumer>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
+                </div>
             );
         }
         else {
