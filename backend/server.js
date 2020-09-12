@@ -17,20 +17,23 @@ const passportLocalMongoose = require('passport-local-mongoose');
 const UserDetails = require('./models/users.model');
 const cookieParser = require('cookie-parser')
 const LocalStrategy = require('passport-local').Strategy; 
-
-const expressSession = require('express-session')({
-    secret: '3COzsSaiAz1sGLYp7v5UEwezaneV9wPE',
-    resave: false,
-    saveUninitialized: false
-})
+const cookieSession = require('cookie-session')
 
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-app.use(cors());
+app.use(cors({
+    credentials: true,
+    origin: "http://localhost:3000"
+}));
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(expressSession);
+
+app.use(cookieSession({
+    name: 'MovieDB',
+    keys: ['3COzsSaiAz1sGLYp7v5UEwezaneV9wPE'],
+    maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -58,3 +61,4 @@ mongoose.connect(process.env.DB_URL, {
 passport.use(new LocalStrategy(UserDetails.authenticate()));
 passport.serializeUser(UserDetails.serializeUser());
 passport.deserializeUser(UserDetails.deserializeUser());
+

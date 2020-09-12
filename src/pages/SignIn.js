@@ -42,10 +42,11 @@ const SignIn = (props) => {
 
         try {
             const response = await fetch('http://localhost:4000/signin', {
-                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                method: 'POST',
+                credentials: 'include',
                 body: JSON.stringify(body)
             })
 

@@ -42,12 +42,16 @@ const Forums = ({ history }) => {
                 'Content-Type': 'application/json'
             },
             method: 'POST',
+            credentials: 'include',
             body: JSON.stringify(body)
         })
         .then(response => response.json())
         .then(json => {
             if (json.success) {
-                setCreated(true);
+                setCreated(!created);
+                setCreateForum(!createForum);
+                setForumName(null);
+                setForumId(null);
             }
         })
     };
@@ -72,11 +76,12 @@ const Forums = ({ history }) => {
                     <Form.Control type="text" onChange={handleChange} />
                 </Form.Group>
                 <Button type="submit" variant="primary">Submit</Button>
+                <hr />
             </Form>
             : null}
             <div style={{ display: "flex", alignContent: "center" }}>
                 {forumList ?
-                    <Table style={{ flexBasis: "1" }}>
+                    <Table style={{ flexBasis: "1" }} bordered striped hover>
                         <tbody>
                             {forumList.map(item => {
                                 return <ForumItem key={item.id} history={history} name={item.name} id={item.id} />

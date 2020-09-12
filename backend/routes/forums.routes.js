@@ -29,7 +29,7 @@ router.get('/', async (req, res, err) => {
     }
 });
 
-router.post('/', async (req, res, err) => {
+router.post('/', checkIsAdmin, async (req, res, err) => {
     const forumName = req.body.forumName;
     const id = req.body.id;
 
@@ -70,7 +70,7 @@ router.get('/:id', async (req, res, err) => {
                 threadTitle: item.threadTitle,
                 postCreator: item.postCreator
             }
-            forumThreads.threadList.push(threadItem)
+            forumThreads.threadList.unshift(threadItem)
         })
 
         res.status(200).json(forumThreads);
@@ -87,8 +87,13 @@ router.get('/:id', async (req, res, err) => {
 
 //post new thread
 router.post('/:id', connectEnsureLogin('/signin'), async (req, res, err) => {
+    if (!req.user) {
+        res.status(501).json({message: "user not logged in"})
+        return;
+    }
     const id = req.params.id;
     const threadTitle = req.body.threadTitle;
+    const postBody = req.body.postBody;
     const postCreator = req.user.username;
     try {
         const forum = await ForumDetails.findOne({ "id": id });
@@ -104,9 +109,27 @@ router.post('/:id', connectEnsureLogin('/signin'), async (req, res, err) => {
                 dateCreated: Date.now(),
                 threadTitle: threadTitle,
                 postCreator: postCreator,
-                id: ++lastID
+                id: ++lastID,
             })
             await forum.save();
+        }
+        const threadId = forum.threads[forum.threads.length-1].id;
+
+        const thread = await ForumDetails.findOne({ "id": id, "threads.id": threadId }, { threads: {
+            $elemMatch: {
+                id: threadId
+            }
+        }});
+        if (thread) {
+            const forumPosts = thread.threads[0].forumPosts;
+            await forumPosts.push({
+                dateCreated: Date.now(),
+                postCreator: postCreator,
+                postContent: postBody,
+                editedBy: null,
+                dateUpdated: null
+            })
+            await thread.save();
         }
 
         res.status(200).json({
