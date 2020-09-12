@@ -43,6 +43,7 @@ router.post('/', async (req, res, err) => {
             success: true
         });
     } catch (err) {
+        console.log(err.message);
         res.status(401).json({message: "Error creating forum", success: false})
     }
 

@@ -15,8 +15,8 @@ const Forums = ({ history }) => {
 
     const [forumList, setForumList] = React.useState(null)
     const [createForum, setCreateForum] = React.useState(false)
-    const [forumName, setForumName] = React.useState('');
-    const [forumId, setForumId] = React.useState('');
+    const [forumName, setForumName] = React.useState(null);
+    const [forumId, setForumId] = React.useState(null);
     const [created, setCreated] = React.useState(false);
 
     React.useEffect(() => {
@@ -27,15 +27,20 @@ const Forums = ({ history }) => {
             });
     }, [created])
 
-    const handleSubmit = (event, name, id) => {
+    const handleSubmit = (event) => {
         event.preventDefault();
 
         const body = {
-            forumName: name,
-            id: id
+            forumName: forumName,
+            id: forumId
         };
 
+        console.log(body);
+
         fetch("http://localhost:4000/forums", {
+            headers: {
+                'Content-Type': 'application/json'
+            },
             method: 'POST',
             body: JSON.stringify(body)
         })
@@ -47,18 +52,24 @@ const Forums = ({ history }) => {
         })
     };
 
+    const handleChange = (e) => {
+        const { value, id } = e.target;
+        if (id === "forumName") setForumName(value);
+        else if (id === "forumId") setForumId(value);
+    }
+
     return (
         <Container>
             {isAdmin ? <Button variant="link" style={{display: "block", textAlign: "center", marginBottom: "10px"}} onClick={() => setCreateForum(!createForum)}>[Create new forum]</Button> : null}
             {createForum ? 
-            <Form onSubmit={(e) => handleSubmit(e, forumName, forumId)}>
+            <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="forumName">
                     <Form.Label>Forum name:</Form.Label>
-                    <Form.Control type="text" onChange={e => setForumName(e.target.value)} />
+                    <Form.Control type="text" onChange={handleChange} />
                 </Form.Group>
                 <Form.Group controlId="forumId">
                     <Form.Label>Forum ID:</Form.Label>
-                    <Form.Control type="text" onChange={e => setForumId(e.target.value)} />
+                    <Form.Control type="text" onChange={handleChange} />
                 </Form.Group>
                 <Button type="submit" variant="primary">Submit</Button>
             </Form>
