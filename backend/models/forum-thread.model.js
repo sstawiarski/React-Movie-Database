@@ -8,6 +8,7 @@ const ForumThread = new Schema({
     threadTitle: {type: String, required: true, unique: false},
     postCreator: {type: String, required: true, unique: false},
     id: {type: Number, required: true, unique: true},
+    lastPost: {type: mongoose.Types.ObjectId, required: false, unique: true},
     forumPosts: [ForumPost]
 });
 

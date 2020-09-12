@@ -44,7 +44,7 @@ router.post('/', checkIsAdmin, async (req, res, err) => {
         });
     } catch (err) {
         console.log(err.message);
-        res.status(401).json({message: "Error creating forum", success: false})
+        res.status(401).json({ message: "Error creating forum", success: false })
     }
 
 });
@@ -59,11 +59,15 @@ router.get('/:id', async (req, res, err) => {
     };
     try {
         const forum = await ForumDetails.findOne({ "id": id })
-        
+
         const threads = forum.threads;
 
         threads.forEach(item => {
             forumThreads.threadsFound = true;
+            if (item.lastPost) {
+            }
+            
+
             let threadItem = {
                 id: item.id,
                 dateCreated: item.dateCreated,
@@ -88,7 +92,7 @@ router.get('/:id', async (req, res, err) => {
 //post new thread
 router.post('/:id', connectEnsureLogin('/signin'), async (req, res, err) => {
     if (!req.user) {
-        res.status(501).json({message: "user not logged in"})
+        res.status(501).json({ message: "user not logged in" })
         return;
     }
     const id = req.params.id;
@@ -104,33 +108,52 @@ router.post('/:id', connectEnsureLogin('/signin'), async (req, res, err) => {
             lastID = lastAddedPost.id;
         }
 
+        let threadsLength = 0;
         if (forum) {
-            await forum.threads.push({
+            threadsLength = await forum.threads.push({
                 dateCreated: Date.now(),
                 threadTitle: threadTitle,
                 postCreator: postCreator,
-                id: ++lastID,
+                id: ++lastID
             })
             await forum.save();
         }
-        const threadId = forum.threads[forum.threads.length-1].id;
+        const threadId = forum.threads[forum.threads.length - 1].id;
 
-        const thread = await ForumDetails.findOne({ "id": id, "threads.id": threadId }, { threads: {
-            $elemMatch: {
-                id: threadId
+        const thread = await ForumDetails.findOne({ "id": id, "threads.id": threadId }, {
+            threads: {
+                $elemMatch: {
+                    id: threadId
+                }
             }
-        }});
+        });
+
+        let forumPosts = 0;
+        let result = 0;
         if (thread) {
-            const forumPosts = thread.threads[0].forumPosts;
-            await forumPosts.push({
+            forumPosts = thread.threads[0].forumPosts;
+            const postLength = await forumPosts.push({
                 dateCreated: Date.now(),
                 postCreator: postCreator,
                 postContent: postBody,
                 editedBy: null,
                 dateUpdated: null
             })
+            result = forumPosts[postLength - 1]._id;
             await thread.save();
         }
+
+        await ForumDetails.findOneAndUpdate({
+            "id": id, "threads": {
+                '$elemMatch': {
+                    id: threadId
+                }
+            }
+        }, {
+            $set: {
+                'threads.$.lastPost': mongoose.Types.ObjectId(result)
+            }
+        })
 
         res.status(200).json({
             message: "New thread created",
@@ -155,17 +178,18 @@ router.get('/:forumId/:threadId', async (req, res, err) => {
 
     const firstFewPosts = {
         postsFound: false,
+        totalPosts: 0,
         posts: []
     }
-
     try {
         const forum = await ForumDetails.findOne({ "id": forumId });
         const threads = forum.threads;
-        //console.log(threads);
         const posts1 = threads.filter(item => {
             return item.id !== threadId;
         });
 
+
+        firstFewPosts.totalPosts = posts1.length;
         for (let i = 0; i < posts1.length && i < 25; i++) {
             firstFewPosts.postsFound = true;
             firstFewPosts.posts.push(posts1[i].forumPosts[i]);
@@ -191,6 +215,7 @@ router.get('/:forumId/:threadId/:pageNumber', async (req, res, err) => {
 
     const pagePosts = {
         postsFound: false,
+        totalPosts: 0,
         posts: []
     }
 
@@ -203,7 +228,8 @@ router.get('/:forumId/:threadId/:pageNumber', async (req, res, err) => {
         });
 
         let isExceeded = true;
-        for (let i = pageLimit*(pageNumber - 1); i < posts.length && i < (pageLimit*pageNumber); i++) {
+        pagePosts.totalPosts = posts.length;
+        for (let i = pageLimit * (pageNumber - 1); i < posts.length && i < (pageLimit * pageNumber); i++) {
             isExceeded = false;
             pagePosts.postsFound = true;
             pagePosts.posts.push(posts[i].forumPosts[i]);
@@ -234,11 +260,13 @@ router.post('/:forumId/:threadId', connectEnsureLogin('/signin'), async (req, re
     const postContent = req.body.postContent;
     const postCreator = req.user.username;
     try {
-        const thread = await ForumDetails.findOne({ "id": forumId, "threads.id": threadId }, { threads: {
-            $elemMatch: {
-                id: threadId
+        const thread = await ForumDetails.findOne({ "id": forumId, "threads.id": threadId }, {
+            threads: {
+                $elemMatch: {
+                    id: threadId
+                }
             }
-        }});
+        });
         if (thread) {
             const forumPosts = thread.threads[0].forumPosts;
             await forumPosts.push({
@@ -274,11 +302,13 @@ router.put('/:forumId/:threadId/:postId', connectEnsureLogin('/signin'), async (
     const editor = req.user.username;
 
     try {
-        const thread = await ForumDetails.findOne({ "id": forumId, "threads.id": threadId }, { threads: {
-            $elemMatch: {
-                id: threadId
+        const thread = await ForumDetails.findOne({ "id": forumId, "threads.id": threadId }, {
+            threads: {
+                $elemMatch: {
+                    id: threadId
+                }
             }
-        }});
+        });
         if (thread) {
             /*
             const forumPosts = thread.threads[0].forumPosts;
@@ -287,11 +317,13 @@ router.put('/:forumId/:threadId/:postId', connectEnsureLogin('/signin'), async (
             }).pop();
             console.log(specificPost);*/
 
-            const item = await ForumDetails.findOneAndUpdate({ "id": forumId, "threads.id": threadId, "threads.forumPosts._id": postId }, { $set: {
-                postContent: postContent,
-                dateUpdated: Date.now(),
-                editedBy: editor
-            }});
+            const item = await ForumDetails.findOneAndUpdate({ "id": forumId, "threads.id": threadId, "threads.forumPosts._id": postId }, {
+                $set: {
+                    postContent: postContent,
+                    dateUpdated: Date.now(),
+                    editedBy: editor
+                }
+            });
             console.log(item);
 
         }

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { HashLink as Link } from 'react-router-hash-link';
+
 import Card from 'react-bootstrap/Card';
 
 const ForumPost = ({ postId, postContent, postCreator, dateCreated, dateUpdated, editedBy }) => {
@@ -7,7 +9,7 @@ const ForumPost = ({ postId, postContent, postCreator, dateCreated, dateUpdated,
     const shortPostId = postId.substr(0, 7) + '...';
     return (
         <Card bg="light" id={postId}>
-            <Card.Header><a href={postId}>#{`${shortPostId}`}</a>{`  ${postCreator}`}<span style={{ float: "right" }}>{`${dateCreated}`}</span></Card.Header>
+            <Card.Header><Link to={`#${postId}`}>#{`${shortPostId}`}</Link>{`  ${postCreator}`}<span style={{ float: "right" }}>{`${dateCreated}`}</span></Card.Header>
             <Card.Body>
                 {postContent}
             </Card.Body>
