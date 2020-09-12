@@ -26,6 +26,7 @@ const ForumDetails = ({ history, ...props }) => {
             .then(json => {
                 if (json.threadsFound) setForumThreads(json.threadList);
             })
+            // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [created])
 
     const handleSubmit = (event) => {

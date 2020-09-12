@@ -12,6 +12,7 @@ const ForumThread = (props) => {
         .then(json => {
             if (json.postsFound) setPosts(json.posts);
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (

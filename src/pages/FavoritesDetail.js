@@ -37,11 +37,9 @@ const GridItem = styled.div`
 const FavoritesDetail = (props) => {
 
     const [{
-        username,
         favorites,
         isLoading
     }, setState] = React.useState({
-            username: props.match.params.username,
             favorites: [],
             isLoading: true
     })
