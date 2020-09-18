@@ -64,16 +64,27 @@ router.get('/:id', async (req, res, err) => {
 
         threads.forEach(item => {
             forumThreads.threadsFound = true;
-            if (item.lastPost) {
-            }
-            
 
             let threadItem = {
                 id: item.id,
                 dateCreated: item.dateCreated,
                 threadTitle: item.threadTitle,
-                postCreator: item.postCreator
+                postCreator: item.postCreator,
+                lastPost: null,
+                lastPostFound: false
             }
+            if (item.lastPost) {
+                const post = item.forumPosts.filter(post => post._id.toString() === item.lastPost.toString());
+
+                if (post.length) {
+                    threadItem.lastPost = {
+                        postCreator: post[0].postCreator,
+                        dateCreated: post[0].dateCreated
+                    }
+                    threadItem.lastPostFound = true;
+                }
+            }
+
             forumThreads.threadList.unshift(threadItem)
         })
 
@@ -185,7 +196,7 @@ router.get('/:forumId/:threadId', async (req, res, err) => {
         const forum = await ForumDetails.findOne({ "id": forumId });
         const threads = forum.threads;
         const posts1 = threads.filter(item => {
-            return item.id !== threadId;
+            return item.id.toString() === threadId;
         });
 
 
@@ -267,6 +278,8 @@ router.post('/:forumId/:threadId', connectEnsureLogin('/signin'), async (req, re
                 }
             }
         });
+        let result = null;
+
         if (thread) {
             const forumPosts = thread.threads[0].forumPosts;
             await forumPosts.push({
@@ -276,8 +289,21 @@ router.post('/:forumId/:threadId', connectEnsureLogin('/signin'), async (req, re
                 editedBy: null,
                 dateUpdated: null
             })
+            result = forumPosts[forumPosts.length-1]._id;
             await thread.save();
         }
+
+        await ForumDetails.findOneAndUpdate({
+            "id": forumId, "threads": {
+                '$elemMatch': {
+                    id: threadId
+                }
+            }
+        }, {
+            $set: {
+                'threads.$.lastPost': mongoose.Types.ObjectId(result)
+            }
+        })
 
         res.status(200).json({
             message: "New post created",
