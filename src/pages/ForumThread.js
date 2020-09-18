@@ -16,6 +16,10 @@ const ForumThread = ({ history, breadcrumbs, forumName, ...props}) => {
     const [postBody, setPostBody] = React.useState('');
     const [postSuccess, setPostSuccess] = React.useState(false);
     const [threadTitle, setThreadTitle] = React.useState('');
+    const [totalPosts, setTotalPosts] = React.useState(0);
+    const [currentPage, setCurrentPage] = React.useState(0);
+
+    const pageLimit = 2;
 
     const userState = React.useContext(store);
 
@@ -25,6 +29,7 @@ const ForumThread = ({ history, breadcrumbs, forumName, ...props}) => {
             .then(json => {
                 if (json.postsFound) setPosts(json.posts);
                 setThreadTitle(json.threadTitle);
+                setTotalPosts(json.totalPosts);
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [postSuccess])
@@ -56,6 +61,10 @@ const ForumThread = ({ history, breadcrumbs, forumName, ...props}) => {
 
     const handleChange = (event) => {
         setPostBody(event.target.value)
+    }
+
+    const handleClick = (event) => {
+
     }
 
     return (

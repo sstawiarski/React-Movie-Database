@@ -187,7 +187,8 @@ router.post('/:id', connectEnsureLogin('/signin'), async (req, res, err) => {
 router.get('/:forumId/:threadId', async (req, res, err) => {
     const forumId = req.params.forumId;
     const threadId = req.params.threadId;
-    const pageLimit = 25;
+    const page = req.query.page || 1;
+    const pageLimit = 2;
 
     const firstFewPosts = {
         postsFound: false,
@@ -206,7 +207,7 @@ router.get('/:forumId/:threadId', async (req, res, err) => {
 
         firstFewPosts.totalPosts = posts1[0].forumPosts.length;
         firstFewPosts.threadTitle = posts1[0].threadTitle;
-        for (let i = 0; i < posts1[0].forumPosts.length && i < 25; i++) {
+        for (let i = ((page-1)*(pageLimit)) || 0; i < posts1[0].forumPosts.length && i < page*pageLimit; i++) {
             firstFewPosts.postsFound = true;
             firstFewPosts.posts.push(posts1[0].forumPosts[i]);
         }
@@ -341,13 +342,6 @@ router.put('/:forumId/:threadId/:postId', connectEnsureLogin('/signin'), async (
             }
         });
         if (thread) {
-            /*
-            const forumPosts = thread.threads[0].forumPosts;
-            const specificPost = forumPosts.filter(item => {
-                return item.id === postId;
-            }).pop();
-            console.log(specificPost);*/
-
             const item = await ForumDetails.findOneAndUpdate({ "id": forumId, "threads.id": threadId, "threads.forumPosts._id": postId }, {
                 $set: {
                     postContent: postContent,
