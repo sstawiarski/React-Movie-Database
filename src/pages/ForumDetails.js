@@ -4,13 +4,16 @@ import Container from 'react-bootstrap/Container';
 import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-
+import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
 import ForumItem from '../components/ForumItem';
 
 import { store } from '../authentication/UserProvider';
+import {Link} from "react-router-dom";
 
-const ForumDetails = ({ history, ...props }) => {
+const ForumDetails = ({ history, breadcrumbs, ...props }) => {
 
+
+    const [forumName, setForumName] = React.useState('');
     const [forumThreads, setForumThreads] = React.useState(null);
     const [formEntry, showFormEntry] = React.useState(false);
     const [threadTitle, setThreadTitle] = React.useState(null);
@@ -25,6 +28,7 @@ const ForumDetails = ({ history, ...props }) => {
             .then(response => response.json())
             .then(json => {
                 if (json.threadsFound) setForumThreads(json.threadList);
+                setForumName(json.forumName);
             })
             // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [created])
@@ -64,7 +68,25 @@ const ForumDetails = ({ history, ...props }) => {
 
     return (
         <Container>
-            {user ? <Button variant="link" onClick={() => showFormEntry(!formEntry)}>[Create new thread]</Button> : null}
+            {breadcrumbs.map(({ match, location, breadcrumb }, idx) => {
+                let separator = " / ";
+                let style = {
+                    color: "black",
+                };
+
+                if (idx === (breadcrumbs.length-1)) {
+                    separator = "";
+                    style.color = "rgb(1,123,255)";
+                }
+                return (
+                    <span key={match.url}>
+                        <Link to={match.url} style={style}>{breadcrumb}</Link>
+                        {separator}
+                    </span>
+                )
+            })}
+            <h3 style={{marginTop: "10px"}}>{forumName}</h3>
+            {user ? <Button variant="link" style={{display: "block", margin: "10px auto 0 auto"}} onClick={() => showFormEntry(!formEntry)}>[Create new thread]</Button> : null}
             {formEntry ?
                 <Form onSubmit={handleSubmit}>
                     <Form.Group controlId="threadTitle">
@@ -95,7 +117,7 @@ const ForumDetails = ({ history, ...props }) => {
                         </thead>
                         <tbody>
                             {forumThreads.map(item => {
-                                return <ForumItem key={item.id} name={item.threadTitle} id={props.match.params.id} threadId={item.id} postCreator={item.postCreator} dateCreated={item.dateCreated} history={history} lastPost={item.lastPost} lastPostFound={item.lastPostFound} />;
+                                return <ForumItem key={item.id} name={item.threadTitle} id={props.match.params.id} threadId={item.id} postCreator={item.postCreator} dateCreated={item.dateCreated} history={history} lastPost={item.lastPost} lastPostFound={item.lastPostFound} forumName={forumName}/>;
                             })}
                         </tbody>
                     </Table>
@@ -105,4 +127,4 @@ const ForumDetails = ({ history, ...props }) => {
     );
 };
 
-export default ForumDetails;
+export default withBreadcrumbs()(ForumDetails);

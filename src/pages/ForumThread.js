@@ -1,4 +1,5 @@
 import React from 'react';
+import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
 
 import Container from 'react-bootstrap/Container';
 import ForumPost from '../components/ForumPost';
@@ -6,12 +7,15 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
 import {store} from '../authentication/UserProvider';
+import {Link} from "react-router-dom";
 
-const ForumThread = (props) => {
+const ForumThread = ({ history, breadcrumbs, forumName, ...props}) => {
+
     const [posts, setPosts] = React.useState(null);
     const [createPost, setCreatePost] = React.useState(false);
     const [postBody, setPostBody] = React.useState('');
     const [postSuccess, setPostSuccess] = React.useState(false);
+    const [threadTitle, setThreadTitle] = React.useState('');
 
     const userState = React.useContext(store);
 
@@ -20,6 +24,7 @@ const ForumThread = (props) => {
             .then(response => response.json())
             .then(json => {
                 if (json.postsFound) setPosts(json.posts);
+                setThreadTitle(json.threadTitle);
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [postSuccess])
@@ -55,8 +60,26 @@ const ForumThread = (props) => {
 
     return (
         <Container>
+            {breadcrumbs.map(({ match, location, breadcrumb }, idx) => {
+                let separator = " / ";
+                let style = {
+                    color: "black",
+                };
+
+                if (idx === (breadcrumbs.length-1)) {
+                    separator = "";
+                    style.color = "rgb(1,123,255)";
+                }
+                return (
+                    <span key={match.url}>
+                        <Link to={match.url} style={style}>{breadcrumb}</Link>
+                        {separator}
+                    </span>
+                )
+            })}
             {posts ?
                 <div>
+                    <h3 style={{marginTop: "10px"}}>{threadTitle}</h3>
                     {posts.map(item => {
                         return (
                             <ForumPost key={item._id}
@@ -95,4 +118,4 @@ const ForumThread = (props) => {
     );
 }
 
-export default ForumThread;
+export default withBreadcrumbs()(ForumThread);

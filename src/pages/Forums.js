@@ -5,10 +5,12 @@ import Table from 'react-bootstrap/Table';
 import Form from 'react-bootstrap/Form';
 import ForumItem from '../components/ForumItem'
 import Button from 'react-bootstrap/Button'
+import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
 
 import { store } from '../authentication/UserProvider';
+import {Link} from "react-router-dom";
 
-const Forums = ({ history }) => {
+const Forums = ({ history, breadcrumbs }) => {
 
     const value = React.useContext(store);
     const { isAdmin } = value.state;
@@ -34,8 +36,6 @@ const Forums = ({ history }) => {
             forumName: forumName,
             id: forumId
         };
-
-        console.log(body);
 
         fetch("http://localhost:4000/forums", {
             headers: {
@@ -64,7 +64,24 @@ const Forums = ({ history }) => {
 
     return (
         <Container>
-            {isAdmin ? <Button variant="link" style={{display: "block", textAlign: "center", marginBottom: "10px"}} onClick={() => setCreateForum(!createForum)}>[Create new forum]</Button> : null}
+            {breadcrumbs.map(({ match, breadcrumb }, idx) => {
+                let separator = " / ";
+                let style = {
+                    color: "black",
+                };
+                if (idx === (breadcrumbs.length-1)) {
+                    separator = "";
+                    style.color = "rgb(1,123,255)";
+                }
+                return (
+                    <span key={match.url}>
+                        <Link to={match.url} style={style}>{breadcrumb}</Link>
+                        {separator}
+                    </span>
+                )
+            })}
+            <h3 style={{marginTop: "10px"}}>Forums</h3>
+            {isAdmin ? <Button variant="link" style={{display: "block", margin: "10px auto 0 auto"}} onClick={() => setCreateForum(!createForum)}>[Create new forum]</Button> : null}
             {createForum ? 
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="forumName">
@@ -94,4 +111,4 @@ const Forums = ({ history }) => {
     );
 }
 
-export default Forums;
+export default withBreadcrumbs()(Forums);

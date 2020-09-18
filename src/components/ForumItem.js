@@ -1,10 +1,12 @@
 import React from 'react';
 
-const ForumItem = ({ name, id, history, threadId, dateCreated, postCreator, ...rest }) => {
+const ForumItem = ({ name, id, history, threadId, dateCreated, postCreator, forumName, ...rest }) => {
+
     let newId = id;
     if (threadId) newId = newId + `/${threadId}`;
+
     return (
-        <tr className="clickable-row" onClick={() => history.push(`/forums/${newId}`)}>
+        <tr className="clickable-row" onClick={() => history.push(`/forums/${newId}`, {name: name, forumName: forumName})}>
             <td>{name}</td>
             {rest.lastPostFound ? <td>{new Date(rest.lastPost.dateCreated).toLocaleDateString()}</td> : dateCreated ? <td>{new Date(dateCreated).toLocaleDateString()}</td>: null}
             {rest.lastPostFound ? <td>{rest.lastPost.postCreator}</td> : postCreator ? <td>{postCreator}</td> : null}
