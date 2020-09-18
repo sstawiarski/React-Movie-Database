@@ -87,13 +87,15 @@ const ForumDetails = ({ history, ...props }) => {
                         <thead>
                             <tr>
                                 <th>Post Title</th>
+                                <th>Last Post</th>
+                                <th>Last Poster</th>
                                 <th>Created By</th>
                                 <th>Date Posted</th>
                             </tr>
                         </thead>
                         <tbody>
                             {forumThreads.map(item => {
-                                return <ForumItem key={item.id} name={item.threadTitle} id={props.match.params.id} threadId={item.id} postCreator={item.postCreator} dateCreated={item.dateCreated} history={history} />;
+                                return <ForumItem key={item.id} name={item.threadTitle} id={props.match.params.id} threadId={item.id} postCreator={item.postCreator} dateCreated={item.dateCreated} history={history} lastPost={item.lastPost} lastPostFound={item.lastPostFound} />;
                             })}
                         </tbody>
                     </Table>
