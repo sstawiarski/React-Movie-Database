@@ -3,13 +3,15 @@ import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 
 const Searchbar = (props) => {
-    const [value, setValue] = React.useState(null);
+    const [value, setValue] = React.useState('');
 
     const handleChange = (event) => {
-        event.preventDefault();
         setValue(event.target.value);
-        props.onChange(value);
     }
+
+    React.useEffect(() => {
+        props.onChange(value)
+    }, [value])
 
         return (
             <Container id="searchbar" style={{width: "85%", marginTop: "5%"}}>

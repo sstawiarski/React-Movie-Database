@@ -6,11 +6,10 @@ import DatabaseView from '../components/DatabaseView';
 
 const Movies = (props) => {
 
-    const [value, setValue] = React.useState(null);
+    const [value, setValue] = React.useState('');
 
     const handleChange = (text) => {
         setValue(text);
-        ReactDOM.render(<DatabaseView searchTerm={value} />, document.getElementById("table-view"));
     }
 
     return (
@@ -21,7 +20,7 @@ const Movies = (props) => {
             </Card>
             <br />
             <Card bg="light" id="table-view">
-
+                <DatabaseView searchTerm={value} />
             </Card>
         </div>
     );

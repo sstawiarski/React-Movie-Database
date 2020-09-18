@@ -1,11 +1,12 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 
 import Container from 'react-bootstrap/Container'
 import Table from 'react-bootstrap/Table';
 
 const DatabaseView = (props) => {
 
-    const [movies, setMovies] = React.useState([]);
+    const [movies, setMovies] = React.useState(null);
 
     React.useEffect(() => {
         const searchTerm = encodeURI(props.searchTerm);
@@ -14,7 +15,11 @@ const DatabaseView = (props) => {
                 fetch(`http://localhost:4000/movielist/${searchTerm}`)
                     .then(res => res.json())
                     .then(json => {
-                        setMovies(json);
+                        if (json.success) {
+                            setMovies(json.foundItems);
+                        } else {
+                            setMovies([]);
+                        }
                     });
 
             }
@@ -26,7 +31,7 @@ const DatabaseView = (props) => {
 
     return (
         <Container id="database-view">
-            {movies ? <Table striped bordered hover>
+            {movies ? <Table id={"results"} striped bordered hover>
                 <thead>
                     <tr>
                         <th>IMDb ID</th>
