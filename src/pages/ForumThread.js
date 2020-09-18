@@ -11,6 +11,7 @@ const ForumThread = (props) => {
     const [posts, setPosts] = React.useState(null);
     const [createPost, setCreatePost] = React.useState(false);
     const [postBody, setPostBody] = React.useState('');
+    const [postSuccess, setPostSuccess] = React.useState(false);
 
     const userState = React.useContext(store);
 
@@ -21,7 +22,7 @@ const ForumThread = (props) => {
             if (json.postsFound) setPosts(json.posts);
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, [postSuccess])
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -43,6 +44,7 @@ const ForumThread = (props) => {
                 if (json.success) {
                     setCreatePost(!createPost);
                     setPostBody('');
+                    setPostSuccess(!postSuccess)
                 }
             })
     }
