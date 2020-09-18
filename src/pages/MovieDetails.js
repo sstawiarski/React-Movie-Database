@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState, useContext} from 'react';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
@@ -6,7 +6,7 @@ import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Alert from 'react-bootstrap/Alert';
 
-import { store } from '../authentication/UserProvider';
+import {store} from '../authentication/UserProvider';
 
 import styled from 'styled-components';
 
@@ -30,44 +30,73 @@ const FlexItem = styled.div`
     flex-basis: 33%;
 `;
 
-const Consumer = store.Consumer;
+const MovieDetails = (props) => {
+    const [{
+        searchTerm,
+        isFound,
+        title,
+        year,
+        poster,
+        plot,
+        imdb,
+        director,
+        runtime,
+        rating,
+        actors,
+        writer,
+        boxOffice,
+        production,
+        released,
+        rated,
+        successAdd,
+        isFavorited,
+        successRemove
+    }, setState] = useState({
+        searchTerm: null,
+        isFound: null,
+        title: null,
+        year: null,
+        poster: null,
+        plot: null,
+        imdb: null,
+        director: null,
+        runtime: null,
+        rating: null,
+        actors: null,
+        writer: null,
+        boxOffice: null,
+        production: null,
+        released: null,
+        rated: null,
+        successAdd: '',
+        isFavorited: false,
+        successRemove: ''
+    });
 
-class MovieDetails extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            searchTerm: this.props.match.params.id,
-            isFound: null,
-            title: null,
-            year: null,
-            poster: null,
-            plot: null,
-            imdb: null,
-            director: null,
-            runtime: null,
-            rating: null,
-            actors: null,
-            writer: null,
-            boxOffice: null,
-            production: null,
-            released: null,
-            rated: null,
-            successAdd: '',
-            isFavorited: false,
-            successRemove: ''
-        }
+    const userState = useContext(store)
 
-    }
+    useEffect(() => {
+        setState(prevState => ({
+            ...prevState,
+            searchTerm: props.match.params.id
+        }))
+    }, [props.match.params.id]);
 
-    componentDidMount() {
-        this.setState({ isMounted: true });
+    useEffect(() => {
+        setState(prevState => ({
+            ...prevState,
+            searchTerm: props.match.params.title
+        }))
+    }, [props.match.params.title]);
 
-        if (!this.props.isText) {
-            fetch(`http://localhost:4000/moviedetails/${this.state.searchTerm}`)
-                .then(res => res.json())
-                .then(json => {
-                    if (this.state.isMounted) {
-                        this.setState({
+    useEffect(() => {
+        if (searchTerm) {
+            if (!props.isText) {
+                fetch(`http://localhost:4000/moviedetails/${searchTerm}`)
+                    .then(res => res.json())
+                    .then(json => {
+
+                        setState({
                             title: json.title,
                             year: json.year,
                             plot: json.plot,
@@ -85,20 +114,18 @@ class MovieDetails extends React.Component {
                             released: json.released,
                             rated: json.rated
                         });
-                    }
-                })
-                .catch(err => console.log(err));
+                    })
+                    .catch(err => console.log(err));
 
-        } else {
-            fetch(`http://localhost:4000/movielist/${this.props.match.params.title}`)
-                .then(res => res.json())
-                .then(json => {
-                    if (!json.success) {
-                        return;
-                    }
-                    json = json.foundItems[0];
-                    if (this.state.isMounted) {
-                        this.setState({
+            } else {
+                fetch(`http://localhost:4000/movielist/${searchTerm}`)
+                    .then(res => res.json())
+                    .then(json => {
+                        if (!json.success) {
+                            return;
+                        }
+                        json = json.foundItems[0];
+                        setState({
                             title: json.title,
                             year: json.year,
                             plot: json.plot,
@@ -116,24 +143,40 @@ class MovieDetails extends React.Component {
                             released: json.released,
                             rated: json.rated
                         });
-                    }
-                })
-                .catch(err => console.log(err));
+                    })
+                    .catch(err => console.log(err));
+            }
         }
+    }, [searchTerm, props.isText])
 
-    }
+    useEffect(() => {
+        const checkFavorite = async (imdbID, username) => {
+            try {
+                const response = await fetch(`http://localhost:4000/favorites/${username}/${imdbID}`);
+                const json = await response.json();
+                if (json) {
+                    if (json.isInFavorites) {
+                        setState(prevState => ({
+                            ...prevState,
+                            isFavorited: true
+                        }))
+                    }
+                }
+            } catch (error) {
+                console.error(error.message)
+            }
+        };
 
-    componentWillUnmount() {
-        this.setState({ isMounted: false });
-    }
+        checkFavorite(imdb, userState.state.user);
+    }, [imdb, userState.state.user, successAdd])
 
-    addFavorite = async (imdbID, username) => {
+    const addFavorite = async () => {
         const body = {
-            username: username
+            username: userState.state.user
         }
 
         try {
-            await fetch(`http://localhost:4000/favorites/${imdbID}`, {
+            await fetch(`http://localhost:4000/favorites/${imdb}`, {
                 method: "POST",
                 mode: "cors",
                 cache: "no-cache",
@@ -142,22 +185,27 @@ class MovieDetails extends React.Component {
                 },
                 body: JSON.stringify(body)
             });
-            this.setState({ successAdd: true });
-        }
-        catch (error) {
+            setState(prevState => ({
+                ...prevState,
+                successAdd: true
+            }));
+        } catch (error) {
             console.error(error.message)
-            this.setState({ successAdd: false });
+            setState(prevState => ({
+                ...prevState,
+                successAdd: false
+            }));
         }
 
     }
 
-    removeFavorite = async (imdbID, username) => {
+    const removeFavorite = async () => {
         const body = {
-            username: username
+            username: userState.state.user
         }
 
         try {
-            await fetch(`http://localhost:4000/favorites/${imdbID}`, {
+            await fetch(`http://localhost:4000/favorites/${imdb}`, {
                 method: "DELETE",
                 mode: "cors",
                 cache: "no-cache",
@@ -166,157 +214,146 @@ class MovieDetails extends React.Component {
                 },
                 body: JSON.stringify(body)
             });
-            this.setState({ isFavorited: false, successRemove: true });
-        }
-        catch (error) {
+            setState(prevState => ({
+                ...prevState,
+                isFavorited: false,
+                successRemove: true
+            }))
+        } catch (error) {
             console.error(error.message)
-            this.setState({ successRemove: false });
+            setState(prevState => ({
+                ...prevState,
+                successRemove: false
+            }))
         }
 
     }
 
-    checkFavorite = (imdbID, username) => {
-        try {
-            fetch(`http://localhost:4000/favorites/${username}/${imdbID}`)
-                .then(response => response.json())
-                .then(json => {
-                    if (json.isInFavorites) {
-                        this.setState({ isFavorited: true })
-                    }
-                });
+    if (isFound) {
+        return (
+            <div id="movie-details">
 
-        }
-        catch (error) {
-            console.error(error.message)
-        }
+                {successAdd ?
+                    <Alert variant="success" onClose={() => setState(prevState => ({
+                        ...prevState,
+                        successAdd: ''
+                    }))} dismissible>
+                        <AlertText>Movie added to favorites</AlertText>
+                    </Alert> : null}
+                {successAdd === false ?
+                    <Alert variant="danger" onClose={() => setState(prevState => ({
+                        ...prevState,
+                        successAdd: ''
+                    }))} dismissible>
+                        <AlertText>Movie could not be added to favorites</AlertText>
+                    </Alert> : null}
+                {successRemove ?
+                    <Alert variant="success" onClose={() => setState(prevState => ({
+                        ...prevState,
+                        successRemove: ''
+                    }))} dismissible>
+                        <AlertText>Movie removed favorites</AlertText>
+                    </Alert> : null}
+
+                <Row>
+                    <Col xs={16} md={8}>
+                        <Card bg="light">
+                            <Card.Header>Movie Details</Card.Header>
+                            <Card.Body>
+                                <h2 style={{textAlign: "center"}}>{title} ({year})</h2>
+
+                                <Subsection>Plot Summary</Subsection>
+                                <p>{plot}</p>
+
+                                <Subsection>Director</Subsection>
+                                <p>{director}</p>
+
+                                <Subsection>Castlist</Subsection>
+                                <Table striped bordered>
+                                    <tbody>
+                                    {actors.split(',').map(actor => {
+                                        return (<tr key={actor}>
+                                            <td>{actor}</td>
+                                        </tr>)
+                                    })}
+                                    </tbody>
+                                </Table>
+
+                                <MinorDetails>
+                                    <Subsection style={{flex: "100%"}}>Additional Information</Subsection>
+
+                                    <FlexItem>
+                                        <h5 className="subsection"><b>Writer</b></h5>
+                                        <p>{writer}</p>
+                                    </FlexItem>
+
+                                    <FlexItem>
+                                        <h5 className="subsection"><b>Runtime</b></h5>
+                                        <p>{runtime}</p>
+                                    </FlexItem>
+
+                                    <FlexItem>
+                                        <h5 className="subsection"><b>Box Office</b></h5>
+                                        <p>{boxOffice}</p>
+                                    </FlexItem>
+
+                                    <FlexItem>
+                                        <h5 className="subsection"><b>Production</b></h5>
+                                        <p>{production}</p>
+                                    </FlexItem>
+
+                                    <FlexItem>
+                                        <h5 className="subsection"><b>Release Date</b></h5>
+                                        <p>{released}</p>
+                                    </FlexItem>
+
+                                    <FlexItem>
+                                        <h5 className="subsection"><b>Rated</b></h5>
+                                        <p>{rated}</p>
+                                    </FlexItem>
+
+                                </MinorDetails>
+                            </Card.Body>
+                        </Card>
+                    </Col>
+
+                    <Col xs={16} md={4}>
+                        <Card bg="light">
+                            <Card.Header>Quick Info</Card.Header>
+                            <Card.Body>
+                                <Card.Img src={poster} className="featured-movie-poster"/>
+                                <br/>
+                                <p><b>Director: </b> {director}</p>
+                                <p><b>Summary: </b> {plot}</p>
+                                <p><b>Rated: </b> {rated}</p>
+                                <p><b>Runtime: </b> {runtime}</p>
+                                <p><b>IMDb Rating: </b> {rating}</p>
+
+                                {isFavorited ? <Button variant="outline-danger"
+                                                       onClick={removeFavorite}>Remove
+                                    from favorites</Button> : <Button
+                                    onClick={addFavorite}>Add
+                                    to favorites</Button>}
+                            </Card.Body>
+                        </Card>
+                    </Col>
+                </Row>
+            </div>
+        );
+    } else {
+        return (
+            <div>
+                <Card bg="light" style={{marginTop: "20px"}}>
+                    <Card.Header>Movie not found</Card.Header>
+                    <Card.Body>
+                        <h3 style={{textAlign: "center"}}>Please try again.</h3>
+                    </Card.Body>
+                </Card>
+            </div>
+        );
     }
 
-    render() {
-        if (this.state.isFound) {
-            return (
-                <div id="movie-details">
 
-                    {this.state.successAdd ?
-                        <Alert variant="success" onClose={() => this.setState({ successAdd: '' })} dismissible>
-                            <AlertText>Movie added to favorites</AlertText>
-                        </Alert> : null}
-                    {this.state.successAdd === false ?
-                        <Alert variant="danger" onClose={() => this.setState({ successAdd: '' })} dismissible>
-                            <AlertText>Movie could not be added to favorites</AlertText>
-                        </Alert> : null}
-                    {this.state.successRemove ?
-                        <Alert variant="success" onClose={() => this.setState({ successRemove: '' })} dismissible>
-                            <AlertText>Movie removed favorites</AlertText>
-                        </Alert> : null}
-
-                    <Row>
-                        <Col xs={16} md={8}>
-                            <Card bg="light">
-                                <Card.Header>Movie Details</Card.Header>
-                                <Card.Body>
-                                    <h2 style={{ textAlign: "center" }}>{this.state.title} ({this.state.year})</h2>
-
-                                    <Subsection>Plot Summary</Subsection>
-                                    <p>{this.state.plot}</p>
-
-                                    <Subsection>Director</Subsection>
-                                    <p>{this.state.director}</p>
-
-                                    <Subsection>Castlist</Subsection>
-                                    <Table striped bordered>
-                                        <tbody>
-                                            {this.state.actors.split(',').map(actor => {
-                                                return (<tr key={actor}><td>{actor}</td></tr>)
-                                            })}
-                                        </tbody>
-                                    </Table>
-
-                                    <MinorDetails>
-                                        <Subsection style={{ flex: "100%" }}>Additional Information</Subsection>
-
-                                        <FlexItem>
-                                            <h5 className="subsection"><b>Writer</b></h5>
-                                            <p>{this.state.writer}</p>
-                                        </FlexItem>
-
-                                        <FlexItem>
-                                            <h5 className="subsection"><b>Runtime</b></h5>
-                                            <p>{this.state.runtime}</p>
-                                        </FlexItem>
-
-                                        <FlexItem>
-                                            <h5 className="subsection"><b>Box Office</b></h5>
-                                            <p>{this.state.boxOffice}</p>
-                                        </FlexItem>
-
-                                        <FlexItem>
-                                            <h5 className="subsection"><b>Production</b></h5>
-                                            <p>{this.state.production}</p>
-                                        </FlexItem>
-
-                                        <FlexItem>
-                                            <h5 className="subsection"><b>Release Date</b></h5>
-                                            <p>{this.state.released}</p>
-                                        </FlexItem>
-
-                                        <FlexItem>
-                                            <h5 className="subsection"><b>Rated</b></h5>
-                                            <p>{this.state.rated}</p>
-                                        </FlexItem>
-
-                                    </MinorDetails>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-
-                        <Col xs={16} md={4}>
-                            <Card bg="light">
-                                <Card.Header>Quick Info</Card.Header>
-                                <Card.Body>
-                                    <Card.Img src={this.state.poster} className="featured-movie-poster" />
-                                    <br />
-                                    <p><b>Director: </b> {this.state.director}</p>
-                                    <p><b>Summary: </b> {this.state.plot}</p>
-                                    <p><b>Rated: </b> {this.state.rated}</p>
-                                    <p><b>Runtime: </b> {this.state.runtime}</p>
-                                    <p><b>IMDb Rating: </b> {this.state.rating}</p>
-
-                                    <Consumer>
-                                        {value => {
-                                            if (value.state.user) {
-                                                this.checkFavorite(this.state.imdb, value.state.user);
-                                                if (!this.state.isFavorited) {
-                                                    return (<Button onClick={() => this.addFavorite(this.state.imdb, value.state.user)}>Add to favorites</Button>)
-                                                } else {
-                                                    return (<Button variant="outline-danger" onClick={() => this.removeFavorite(this.state.imdb, value.state.user)}>Remove from favorites</Button>)
-                                                }
-                                            }
-                                            return (null)
-                                        }}
-                                    </Consumer>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    </Row>
-                </div>
-            );
-        }
-        else {
-            return (
-                <div>
-                    <Card bg="light" style={{ marginTop: "20px" }}>
-                        <Card.Header>Movie not found</Card.Header>
-                        <Card.Body>
-                            <h3 style={{ textAlign: "center" }}>Please try again.</h3>
-                        </Card.Body>
-                    </Card>
-                </div>
-            );
-        }
-
-
-
-    }
 }
 
 export default MovieDetails;
