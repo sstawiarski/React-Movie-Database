@@ -1,4 +1,5 @@
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Form from 'react-bootstrap/Form';
@@ -7,6 +8,7 @@ import Button from 'react-bootstrap/Button';
 
 const Navigation = (props) => {
 
+    const history = useHistory();
     const [search, setSearch] = React.useState(null);
 
     const handleInput = (event) => {
@@ -15,7 +17,7 @@ const Navigation = (props) => {
 
     const handleSearch = (event) => {
         event.preventDefault();
-        props.handleSearch(search);
+        history.push(`/search/${encodeURI(search)}`);
         setSearch("");
     }
 

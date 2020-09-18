@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navigation } from './components/Navigation';
 import Profile from './components/SignInButton'
 import Container from 'react-bootstrap/Container'
-import { Route, Switch, Redirect } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Home from './pages/Home';
 import Movies from './pages/Movies';
 import SignIn from './pages/SignIn';
@@ -19,18 +19,11 @@ import Forums from './pages/Forums'
 
 const App = (props) => {
 
-  const [searchTerm, setSearchTerm] = React.useState("");
-  const [isSearching, setIsSearching] = React.useState(false);
-
-
   return (
     <div className="App">
       <Container>
         <Profile />
-        <Navigation bg="light" handleSearch={(term) => {
-          setSearchTerm(term);
-          setIsSearching(true);
-        }} />
+        <Navigation bg="light" />
         <Switch>
           <Route exact path="/" component={Home} />
           <Route path="/movies" component={Movies} />
@@ -46,10 +39,6 @@ const App = (props) => {
           <Route exact path="/profile/:username/edit" component={EditProfile} />
         </Switch>
       </Container>
-      {searchTerm && isSearching && <Redirect to={{
-        pathname: `/search/${encodeURI(searchTerm)}`,
-        state: { title: encodeURI(searchTerm) }
-      }} />}
     </div>
   );
 
