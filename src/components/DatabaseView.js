@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { useHistory } from 'react-router-dom';
 
 import Container from 'react-bootstrap/Container'
 import Table from 'react-bootstrap/Table';
@@ -7,6 +7,7 @@ import Table from 'react-bootstrap/Table';
 const DatabaseView = (props) => {
 
     const [movies, setMovies] = React.useState(null);
+    const history = useHistory();
 
     React.useEffect(() => {
         const searchTerm = encodeURI(props.searchTerm);
@@ -43,7 +44,7 @@ const DatabaseView = (props) => {
                 <tbody>
                     {movies.map(movie => {
                         return (
-                            <tr key={movie.imdb} className="clickable-row" onClick={() => window.location = `details/${movie.imdb}`}>
+                            <tr key={movie.imdb} className="clickable-row" onClick={() => history.push(`details/${movie.imdb}`)}>
                                 <td>{movie.imdb}</td>
                                 <td>{movie.title}</td>
                                 <td>{movie.year}</td>

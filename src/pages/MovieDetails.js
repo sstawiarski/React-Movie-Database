@@ -76,18 +76,18 @@ const MovieDetails = (props) => {
     const userState = useContext(store)
 
     useEffect(() => {
-        setState(prevState => ({
-            ...prevState,
-            searchTerm: props.match.params.id
-        }))
-    }, [props.match.params.id]);
-
-    useEffect(() => {
-        setState(prevState => ({
-            ...prevState,
-            searchTerm: props.match.params.title
-        }))
-    }, [props.match.params.title]);
+        if (props.match.params.title) {
+            setState(prevState => ({
+                ...prevState,
+                searchTerm: props.match.params.title
+            }))
+        } else if (props.match.params.id) {
+            setState(prevState => ({
+                ...prevState,
+                searchTerm: props.match.params.id
+            }))
+        }
+    }, [props.match.params.title, props.match.params.id]);
 
     useEffect(() => {
         if (searchTerm) {
@@ -95,7 +95,6 @@ const MovieDetails = (props) => {
                 fetch(`http://localhost:4000/moviedetails/${searchTerm}`)
                     .then(res => res.json())
                     .then(json => {
-
                         setState({
                             title: json.title,
                             year: json.year,
