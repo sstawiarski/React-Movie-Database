@@ -54,6 +54,7 @@ router.get('/:id', async (req, res, err) => {
     const id = req.params.id;
 
     let forumThreads = {
+        forumName: '',
         threadsFound: false,
         threadList: []
     };
@@ -87,6 +88,7 @@ router.get('/:id', async (req, res, err) => {
 
             forumThreads.threadList.unshift(threadItem)
         })
+        forumThreads.forumName = forum.name;
 
         res.status(200).json(forumThreads);
 
@@ -189,6 +191,7 @@ router.get('/:forumId/:threadId', async (req, res, err) => {
 
     const firstFewPosts = {
         postsFound: false,
+        threadTitle: '',
         totalPosts: 0,
         posts: []
     }
@@ -202,6 +205,7 @@ router.get('/:forumId/:threadId', async (req, res, err) => {
 
 
         firstFewPosts.totalPosts = posts1[0].forumPosts.length;
+        firstFewPosts.threadTitle = posts1[0].threadTitle;
         for (let i = 0; i < posts1[0].forumPosts.length && i < 25; i++) {
             firstFewPosts.postsFound = true;
             firstFewPosts.posts.push(posts1[0].forumPosts[i]);
