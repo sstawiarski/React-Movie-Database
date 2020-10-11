@@ -25,7 +25,7 @@ router.get('/', async (req, res, err) => {
             }
         }
 
-        res.status(200).json(JSON.stringify(firstPost));
+        res.status(200).json(firstPost);
     }
     catch (err) {
         res.status(401).json({ message: "Error retreving first post" });
@@ -56,14 +56,14 @@ router.get('/:id', async (req, res, err) => {
             }
         }
 
-        res.status(200).json(JSON.stringify(post));
+        res.status(200).json(post);
     }
     catch (err) {
         res.status(401).json({ message: "Error retreving post" });
     }
 });
 
-router.post('/', checkIsAdmin, async (req, res, err) => {
+router.post('/', async (req, res, err) => {
     try {
         const latest = connection.collection('postings').find({}, { sort: { $natural: -1 } });
         let latestId = null;
@@ -85,6 +85,8 @@ router.post('/', checkIsAdmin, async (req, res, err) => {
         const newestId = newPost._id;
 
         await newPost.save();
+
+        console.log(req.body.content)
 
         if (post !== null) {
             await connection.collection('postings').updateOne({ "_id": latestId }, { $set: { before: newestId } });

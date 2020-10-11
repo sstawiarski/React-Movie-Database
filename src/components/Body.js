@@ -27,7 +27,7 @@ const Body = (props) => {
         try {
             const res = await fetch('http://localhost:4000/postings');
             const parse = await res.json();
-            const json = JSON.parse(parse);
+            const json = parse;
 
             setState({ 
                 postDate: new Date(json.date).toLocaleDateString(), 
@@ -99,7 +99,7 @@ const Body = (props) => {
                     <div>
                         <p id="post-date">{postDate}</p>
 
-                        <div id="post-content">{postMessage && <ReactMarkdown source={postMessage.replace(/\n/gi, '\n &nbsp;')} />}</div>
+                        <div id="post-content">{postMessage && <ReactMarkdown source={postMessage.replace(/\\n/gi, '\n &nbsp;')} />}</div>
 
                         <div id="post-navigation">
                             {isNextPost && <Button variant="link" id="previous-btn" onClick={handleClick}>Previous Post</Button>}
