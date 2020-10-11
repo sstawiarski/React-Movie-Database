@@ -3,10 +3,10 @@ This is a movie database website written on the MERN stack. It supports listing,
 
 
 # Installation
-Run `npm install` in both the `root` and the `backend` folder
-Ensure nodemon is installed to run the server
-Run `npm start` in root folder to run React app
-Run `nodemon server.js` in `backend` folder to start the server
+Run `npm install` in both the `root` and the `backend` folder  
+Ensure nodemon is installed to run the server  
+Run `npm start` in root folder to run React app  
+Run `nodemon server.js` in `backend` folder to start the server  
 
 ## Notes
 ### Valid logins
