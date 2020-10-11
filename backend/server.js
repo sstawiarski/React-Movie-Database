@@ -37,7 +37,7 @@ app.use(cookieSession({
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect(process.env.DB_URL, {
+mongoose.connect("mongodb+srv://ser401:Ser401Team24@cluster0.cjcoh.mongodb.net/moviedb?retryWrites=true&w=majority", {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true
