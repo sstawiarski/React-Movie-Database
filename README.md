@@ -3,9 +3,15 @@ This is a movie database website written on the MERN stack. It supports listing,
 
 
 # Installation
-Run `npm run` and start the server.js
-
-
-## Live Demo
+Install nodemon to run the server
+Run `npm start` in root folder to run React app
+Run `nodemon server.js` in `backend` folder to start the server
 
 ## Notes
+### Valid logins
+
+`Username: sample
+Password: Sample123` (Admin account)
+
+`Username: usersample
+Password: User123` (Regular user account)
