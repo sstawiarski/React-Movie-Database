@@ -49,24 +49,21 @@ const PostCreator = (props) => {
 
     const handleChange = (event) => {
         const { value } = event.target;
-        setState({ value: value })
+        setState(prevState => ({
+            ...prevState,
+            value: value 
+        }))
     }
 
     const renderPreview = () => {
-        if (!isLive) setState({ isLive: true });
+        if (!isLive) setState(prevState => ({ ...prevState, isLive: true }));
     }
 
     const cancelPreview = (event) => {
-        setState({ isLive: false });
+        setState(prevState => ({ ...prevState, isLive: false }));
     }
 
-    React.useEffect(() => {
-        if (isLive) {
-            ReactDOM.render(<MarkdownPreview source={value} onClick={cancelPreview} />, document.getElementById("preview-container"));
-        } else {
-            ReactDOM.render(null, document.getElementById("preview-container"));
-        }
-    }, [isLive, value])
+  
 
     return (
         <Card bg={props.bg} id="post-creator">
@@ -79,7 +76,9 @@ const PostCreator = (props) => {
                     <Button variant="primary" type="submit">Submit</Button>
                     <Button variant="outline-secondary" onClick={renderPreview}>Preview Markdown</Button>
                 </Form>
-                {<div id="preview-container"></div>}
+                <div id="preview-container">
+                    {isLive ? <MarkdownPreview source={value} onClick={cancelPreview} /> : null}
+                </div>
             </Card.Body>
         </Card>
     );
