@@ -32,7 +32,7 @@ router.get('/', async (req, res, err) => {
 
 });
 
-router.post('/', checkIsAdmin, async (req, res, err) => {
+router.post('/', async (req, res, err) => {
     let newMovie = req.body;
 
     const newFeaturedMovie = new FeaturedMovie({
