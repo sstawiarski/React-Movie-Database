@@ -24,7 +24,7 @@ const ForumThread = ({ history, breadcrumbs, forumName, ...props}) => {
     const userState = React.useContext(store);
 
     React.useEffect(() => {
-        fetch(`http://localhost:4000/forums/${props.match.params.id}/${props.match.params.threadId}`)
+        fetch(`${process.env.REACT_APP_SERVER_ADDR}/forums/${props.match.params.id}/${props.match.params.threadId}`)
             .then(response => response.json())
             .then(json => {
                 if (json.postsFound) setPosts(json.posts);
@@ -41,7 +41,7 @@ const ForumThread = ({ history, breadcrumbs, forumName, ...props}) => {
             postContent: postBody
         }
 
-        fetch(`http://localhost:4000/forums/${props.match.params.id}/${props.match.params.threadId}`, {
+        fetch(`${process.env.REACT_APP_SERVER_ADDR}/forums/${props.match.params.id}/${props.match.params.threadId}`, {
             headers: {
                 'Content-Type': 'application/json'
             },

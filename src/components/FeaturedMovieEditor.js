@@ -10,7 +10,7 @@ const FeaturedMovieEditor = (props) => {
     const handleSubmit = (event) => {
         event.preventDefault();
         let newMovie;
-        fetch(`http://omdbapi.com/?apikey=cc276c76&i=${value}`)
+        fetch(`http://omdbapi.com/?apikey=${process.env.REACT_APP_OMDB_KEY}&i=${value}`)
             .then(res => res.json())
             .then(json => {
                 newMovie = {
@@ -22,7 +22,7 @@ const FeaturedMovieEditor = (props) => {
                 };
 
                 try {
-                    fetch("http://localhost:4000/featuredMovie", {
+                    fetch(process.env.REACT_APP_SERVER_ADDR + "/featuredMovie", {
                         method: "POST",
                         headers: {
                             'Accept': 'application/json',

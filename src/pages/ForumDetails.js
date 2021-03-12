@@ -24,7 +24,7 @@ const ForumDetails = ({ history, breadcrumbs, ...props }) => {
     const { user } = Context.state;
 
     React.useEffect(() => {
-        fetch(`http://localhost:4000/forums/${props.match.params.id}`)
+        fetch(`${process.env.REACT_APP_SERVER_ADDR}/forums/${props.match.params.id}`)
             .then(response => response.json())
             .then(json => {
                 if (json.threadsFound) setForumThreads(json.threadList);
@@ -41,7 +41,7 @@ const ForumDetails = ({ history, breadcrumbs, ...props }) => {
             postBody: postBody
         };
 
-        fetch(`http://localhost:4000/forums/${props.match.params.id}`, {
+        fetch(`${process.env.REACT_APP_SERVER_ADDR}/forums/${props.match.params.id}`, {
             headers: {
                 'Content-Type': 'application/json'
             },

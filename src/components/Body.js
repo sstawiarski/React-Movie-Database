@@ -25,7 +25,7 @@ const Body = (props) => {
 
     const getPosts = async () => {
         try {
-            const res = await fetch('http://localhost:4000/postings');
+            const res = await fetch(process.env.REACT_APP_SERVER_ADDR + '/postings');
             const parse = await res.json();
             const json = parse;
 
@@ -55,10 +55,9 @@ const Body = (props) => {
             postToGoTo = postBefore;
         }
 
-        fetch(`http://localhost:4000/postings/${postToGoTo}`)
+        fetch(`${process.env.REACT_APP_SERVER_ADDR}/postings/${postToGoTo}`)
             .then(res => res.json())
             .then(json => {
-                json = JSON.parse(json);
                 let hasPrev;
                 let prevId;
                 let hasBefore;

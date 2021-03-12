@@ -92,7 +92,7 @@ const MovieDetails = (props) => {
     useEffect(() => {
         if (searchTerm) {
             if (!props.isText) {
-                fetch(`http://localhost:4000/moviedetails/${searchTerm}`)
+                fetch(`${process.env.REACT_APP_SERVER_ADDR}/moviedetails/${searchTerm}`)
                     .then(res => res.json())
                     .then(json => {
                         setState({
@@ -117,7 +117,7 @@ const MovieDetails = (props) => {
                     .catch(err => console.log(err));
 
             } else {
-                fetch(`http://localhost:4000/movielist/${searchTerm}`)
+                fetch(`${process.env.REACT_APP_SERVER_ADDR}/movielist/${searchTerm}`)
                     .then(res => res.json())
                     .then(json => {
                         if (!json.success) {
@@ -151,7 +151,7 @@ const MovieDetails = (props) => {
     useEffect(() => {
         const checkFavorite = async (imdbID, username) => {
             try {
-                const response = await fetch(`http://localhost:4000/favorites/${username}/${imdbID}`);
+                const response = await fetch(`${process.env.REACT_APP_SERVER_ADDR}/favorites/${username}/${imdbID}`);
                 const json = await response.json();
                 if (json) {
                     if (json.isInFavorites) {
@@ -175,7 +175,7 @@ const MovieDetails = (props) => {
         }
 
         try {
-            await fetch(`http://localhost:4000/favorites/${imdb}`, {
+            await fetch(`${process.env.REACT_APP_SERVER_ADDR}/favorites/${imdb}`, {
                 method: "POST",
                 mode: "cors",
                 cache: "no-cache",
@@ -204,7 +204,7 @@ const MovieDetails = (props) => {
         }
 
         try {
-            await fetch(`http://localhost:4000/favorites/${imdb}`, {
+            await fetch(`${process.env.REACT_APP_SERVER_ADDR}/favorites/${imdb}`, {
                 method: "DELETE",
                 mode: "cors",
                 cache: "no-cache",

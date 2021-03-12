@@ -23,7 +23,7 @@ const PostCreator = (props) => {
             content: value,
         };
         try {
-            fetch("http://localhost:4000/postings", {
+            fetch(process.env.REACT_APP_SERVER_ADDR + "/postings", {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',

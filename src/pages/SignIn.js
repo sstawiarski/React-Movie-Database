@@ -41,7 +41,7 @@ const SignIn = (props) => {
 
 
         try {
-            const response = await fetch('http://localhost:4000/signin', {
+            const response = await fetch(`${process.env.REACT_APP_SERVER_ADDR}/signin`, {
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -91,7 +91,7 @@ const SignIn = (props) => {
             isAdmin: isAdmin
         }
 
-        const response = await fetch('http://localhost:4000/register', {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_ADDR}/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

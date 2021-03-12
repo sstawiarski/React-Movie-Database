@@ -22,7 +22,7 @@ const Forums = ({ history, breadcrumbs }) => {
     const [created, setCreated] = React.useState(false);
 
     React.useEffect(() => {
-        fetch("http://localhost:4000/forums")
+        fetch(process.env.REACT_APP_SERVER_ADDR + "/forums")
             .then(response => response.json())
             .then(json => {
                 if (json.forumsFound) setForumList(json.forumList);
@@ -37,7 +37,7 @@ const Forums = ({ history, breadcrumbs }) => {
             id: forumId
         };
 
-        fetch("http://localhost:4000/forums", {
+        fetch(process.env.REACT_APP_SERVER_ADDR + "/forums", {
             headers: {
                 'Content-Type': 'application/json'
             },

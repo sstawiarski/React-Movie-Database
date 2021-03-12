@@ -14,7 +14,7 @@ const UserProfile = (props) => {
 
     React.useEffect(() => {
         const fetchInfo = async () => {
-            fetch(`http://localhost:4000/profile/${props.match.params.username}`)
+            fetch(`${process.env.REACT_APP_SERVER_ADDR}/profile/${props.match.params.username}`)
                 .then(response => response.json())
                 .then(json => setUser(json));
         }

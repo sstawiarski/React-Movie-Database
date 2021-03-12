@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const PORT = 4000;
 const postings = require('./routes/posts.routes');
 const movielist = require('./routes/movies-list.routes');
 const featuredMovie = require('./routes/featured-movie.routes');
@@ -21,23 +20,24 @@ const cookieSession = require('cookie-session')
 
 const mongoose = require('mongoose');
 require('dotenv').config();
+const PORT = process.env.PORT || 4000;
 
 app.use(cors({
     credentials: true,
-    origin: "http://localhost:3000"
+    origin: process.env.ORIGIN_URL
 }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 
 app.use(cookieSession({
     name: 'MovieDB',
-    keys: ['3COzsSaiAz1sGLYp7v5UEwezaneV9wPE'],
+    keys: [process.env.KEY1, process.env.KEY2],
     maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect("mongodb+srv://ser401:Ser401Team24@cluster0.cjcoh.mongodb.net/moviedb?retryWrites=true&w=majority", {
+mongoose.connect(process.env.DB_URL, {
     useCreateIndex: true,
     useNewUrlParser: true,
     useUnifiedTopology: true

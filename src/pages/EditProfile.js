@@ -25,7 +25,7 @@ const EditProfile = (props) => {
 
     React.useEffect(() => {
         const getProfileInfo = async () => {
-            const response = await fetch(`http://localhost:4000/profile/${username}`);
+            const response = await fetch(`${process.env.REACT_APP_SERVER_ADDR}/profile/${username}`);
             let json = await response.json();
             setState({
                 profileText: json.profileText,
@@ -58,7 +58,7 @@ const EditProfile = (props) => {
             location: location,
         };
 
-        fetch(`http://localhost:4000/profile/${username}`, {
+        fetch(`${process.env.REACT_APP_SERVER_ADDR}/profile/${username}`, {
             method: "PUT",
             headers: {
                 'Content-type': 'application/json; charset=UTF-8' // Indicates the content 

@@ -19,7 +19,7 @@ const Featured = (props) => {
     })
 
     const getFeatured = async () => {
-        const resp = await fetch(`http://localhost:4000/featuredMovie`);
+        const resp = await fetch(`${process.env.REACT_APP_SERVER_ADDR}/featuredMovie`);
         const json = await resp.json();
         setState({
             title: json.title,

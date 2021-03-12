@@ -13,7 +13,7 @@ const DatabaseView = (props) => {
         const searchTerm = encodeURI(props.searchTerm);
         if (searchTerm) {
             try {
-                fetch(`http://localhost:4000/movielist/${searchTerm}`)
+                fetch(`${process.env.REACT_APP_SERVER_ADDR}/movielist/${searchTerm}`)
                     .then(res => res.json())
                     .then(json => {
                         if (json.success) {
